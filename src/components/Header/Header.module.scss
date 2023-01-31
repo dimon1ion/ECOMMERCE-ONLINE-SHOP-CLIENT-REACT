@@ -1,0 +1,73 @@
+  .navbar-lightGreen {
+    .navbar-brand {
+      color: rgba(0, 0, 0, 0.9);
+
+      &:hover,
+      &:focus {
+        color: rgba(0, 0, 0, 0.9);
+      }
+    }
+    .navbar-nav {
+      .nav-link {
+        color: #0a0a0a;
+
+        &:hover,
+        &:focus {
+          color: var(--default-color);
+        }
+      }
+      .show > .nav-link {
+        color: var(--default-color);
+      }
+      .nav-link.active {
+        color: var(--default-color);
+      }
+    }
+    .navbar-toggler {
+      color: var(--default-color);
+      border-color: var(--default-color);
+    }
+    .navbar-toggler-icon {
+      background-image: none;
+    }
+  }
+  .fw-500 {
+    font-weight: 500;
+  }
+  .my-btn-primary{
+    color: #fff !important;
+    display: block;
+    font-size: 0.8em;
+    border-width: 2px;
+    border-radius: 4px;
+    background-color: #0072bc;
+    transition: .2s;
+  }
+  .my-btn-primary:hover{
+    background-color: var(--default-color);
+  }
+  .active-btn {
+    border-color: var(--default-color);
+  }
+  .thumbnail {
+    height: 40px;
+    width: 40px;
+    margin-left: 10px;
+    border-radius: 50%;
+  }
+#scrollup {
+  background-image: url(../../assets/Images/ArrowUp.png);
+  position: fixed;
+  bottom: -30%;
+  right: 20px;
+  height: 38px;
+  width: 38px;
+  transition: 0.4s;
+  z-index: 999;
+  &:hover {
+    transform: translateY(-0.25rem);
+  }
+}
+#scrollup.show-scrollup {
+  bottom: 2.5rem !important;
+}

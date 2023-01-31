@@ -1,0 +1,11 @@
+.back-image {
+  background-image: url(../../assets/Images/back.png);
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 100%;
+  min-height: 604px;
+  padding: 60px 0 80px;
+  @media (min-width: 1600px) {
+    background-size: cover;
+  }
+}

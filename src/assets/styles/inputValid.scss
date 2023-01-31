@@ -1,0 +1,23 @@
+#InputValid {
+  .exception {
+    border-color: #cc0044;
+  }
+  .form-item {
+    margin-bottom: 1.8em;
+    .form-input {
+      height: 44px;
+      font-size: 1em;
+    }
+    .input-react-select.exception {
+      .css-1s2u09g-control,
+      .css-1pahdxg-control {
+        border-color: #cc0044;
+      }
+    }
+  }
+  .errorMessage {
+    color: #cc0044;
+    font-size: 0.9em;
+    padding-left: 5px;
+  }
+}
