@@ -1,0 +1,60 @@
+.max-w-600 {
+  max-width: 600px;
+}
+.white-block {
+  background: #fff;
+  width: 100%;
+  padding: 30px 30px 40px;
+  margin: 0 auto;
+  border-radius: 5px;
+  .user-account {
+    > h2 {
+      margin-bottom: 35px;
+      color: $default-color;
+      font-weight: 700;
+      font-size: 22px;
+    }
+    .log-input {
+      height: 44px;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+    .user-option {
+      margin-top: 55px;
+      color: #b9b9b9;
+      .checkbox-label {
+        :hover {
+          color: $default-color;
+        }
+      }
+      .nav-a {
+        text-decoration: none;
+        color: #858585;
+        transition: 0.3s;
+      }
+      .nav-a:hover {
+        color: $default-color;
+      }
+      .active {
+        color: $default-color;
+      }
+      @media (max-width: 768px) {
+        .checkbox-label {
+          width: 100%;
+        }
+        .nav-a {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+.my-btn-primary {
+  color: #fff;
+  padding: 10px 30px;
+  display: block;
+  font-size: 18px;
+  border-radius: 4px;
+  margin-top: 25px;
+  background-color: #0072bc;
+}
