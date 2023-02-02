@@ -1,24 +1,28 @@
-import "./signIn.scss";
 import { NavLink } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-// import ButtonLoading from "../Standalone/buttonLoad/ButtonLoad";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { readJWT } from "../../Store/functions";
 import InputValidation from "../../ui/InputValidation";
 import ErrorMessage from "../../ui/ErrorMessage";
 import CheckBox from "../../ui/CheckBox/CheckBox";
-// import jwt_decode from "jwt-decode";
+import ButtonLoad from "../../ui/ButtonLoad";
+import s from "./Login.module.scss";
+import backImage from "../../assets/styles/backImage.module.scss";
+import putRequest from "../../requests/putRequest";
+import jwtDecode from "jwt-decode";
+import Token from "../../enums/Token";
+import ServerPath from "../../enums/ServerPath";
 
 export default function Login(props) {
-  const inputClasses = "form-control form-input";
+  //   const inputClasses = "form-control form-input";
 
   const navigate = useNavigate();
-  const serverPath = useSelector((state) => state.server.path);
 
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [keepLogged, setKeepLogged] = useState(false);
+
+  const [userNameErrValue, setUserNameErrValue] = useState(null);
+  const [passwordErrValue, setPasswordErrValue] = useState(null);
 
   const [userNameErrText, setUserNameErrText] = useState(null);
   const [passwordErrText, setPasswordErrText] = useState(null);
@@ -39,41 +43,26 @@ export default function Login(props) {
   async function OnSubmitForm(event) {
     event.preventDefault();
     setBtnSubmitted(true);
-
-    //#region /====> Variables <====/
-
-    let userName = document.getElementById("userName").value;
-    let userNameError = document.getElementById("userNameError");
-    userNameError.innerHTML = "";
-
-    let password = document.getElementById("password").value;
-    let passwordError = document.getElementById("passwordError");
-    passwordError.innerHTML = "";
-
-    let keepLogged = document.getElementById("keepLogged").checked;
-
-    let responseError = document.getElementById("responseError");
-    responseError.innerHTML = "";
     setValidateResponse(true);
-
     let hasError = false;
-
-    //#endregion
 
     //#region /====> WEB Validate <====/
 
     if (userName.length === 0) {
       hasError = true;
       setValidateUserName(false);
-      setUserNameErrText(userName);
-      userNameError.innerHTML += getErrorHTML("User name is empty!");
+      setUserNameErrValue(userName);
+      setUserNameErrText("User name is empty!");
     } else {
-      setUserNameErrText(null);
+      setValidateUserName(true);
     }
     if (password.length === 0) {
       hasError = true;
       setValidatePassword(false);
-      passwordError.innerHTML += getErrorHTML("Password is empty!");
+      setPasswordErrValue(password);
+      setPasswordErrText("Password is empty!");
+    } else {
+      setValidatePassword(true);
     }
 
     //#endregion
@@ -82,59 +71,63 @@ export default function Login(props) {
       setBtnSubmitted(false);
       return;
     }
+    console.log(userName);
+    console.log(password);
+    let data = {
+      email: userName,
+      password: password,
+    };
 
-    let data = new FormData();
-    data.append("login", userName);
-    data.append("password", password);
-    data.append("keepLogged", keepLogged);
+    const response = await putRequest(
+      `${ServerPath.SERVERPATH}${ServerPath.LOGIN}`,
+      data
+    );
 
-    try {
-      let response = await fetch(`${serverPath}/api/Authentication/login`, {
-        method: "POST",
-        body: data,
-      });
-      if (response.ok) {
-        let result = await response.json();
-        let Atoken = readJWT(result.accessToken);
+    if (response === null) {
+      setValidateResponse(false);
+      setResponseErrText(
+        "Prevention is currently underway. Try again in a few minutes"
+      );
+      hasError = true;
+    } else if (response.ok) {
+      try {
+        const result = await response.json();
+        const Atoken = jwtDecode(result.accessToken);
         let expDate = new Date(+Atoken.exp * 1000);
         console.log(expDate.toUTCString());
-        if (Atoken !== null) {
-          document.cookie = `Atoken=${
-            result.accessToken
-          };expires=${expDate.toUTCString()}`;
-          window.localStorage.setItem("Rtoken", result.refreshToken);
-        } else {
-          setValidateResponse(false);
-          responseError.innerHTML = getErrorHTML("Error");
-          hasError = true;
-        }
-      } else if (response.status === 400) {
-        hasError = true;
-        let errors = await response.json();
-
-        //#region /====> Response Validate <====/
-
-        if (errors["Login"] !== undefined) {
-          setValidateUserName(false);
-          setUserNameErrText(userName);
-          userNameError.innerHTML = getErrorsHTML(errors["Login"]);
-        }
-        if (errors["Password"] !== undefined) {
-          setValidatePassword(false);
-          passwordError.innerHTML = getErrorsHTML(errors["Password"]);
-        }
-        if (errors["Error"] !== undefined) {
-          setValidateResponse(false);
-          responseError.innerHTML = getErrorsHTML(errors["Error"]);
-        }
-
-        //#endregion
-      } else {
+        document.cookie = `${Token.ACCESTOKEN}=${
+          result.accessToken
+        };expires=${expDate.toUTCString()}`;
+        window.localStorage.setItem(Token.REFRESHTOKEN, result.refreshToken);
+      } catch (error) {
+        setValidateResponse(false);
+        setResponseErrText(
+          "Prevention is currently underway. Try again in a few minutes"
+        );
         hasError = true;
       }
-    } catch (error) {
-      setValidateResponse(false);
-      responseError.innerHTML = getErrorHTML("Server not responding");
+    } else if (response.status === 400) {
+      hasError = true;
+      let errors = await response.json();
+      console.log(errors);
+      //#region /====> Response Validate <====/
+      if (errors["Login"] !== undefined) {
+        setValidateUserName(false);
+        setUserNameErrValue(userName);
+        setUserNameErrText(errors["Login"]);
+      }
+      if (errors["Password"] !== undefined) {
+        setValidatePassword(false);
+        setPasswordErrValue(password);
+        setPasswordErrText(errors["Password"]);
+      }
+      if (errors["Error"] !== undefined) {
+        setValidateResponse(false);
+        setResponseErrText(errors["Error"]);
+      }
+
+      //#endregion
+    } else {
       hasError = true;
     }
 
@@ -142,34 +135,19 @@ export default function Login(props) {
       setBtnSubmitted(false);
     } else {
       navigate("/home");
-      window.location.reload(false);
+      console.log("Vse ok");
+      //   window.location.reload(false);
     }
-
-    //#region /====> Functions in SubmitForm <====/
-
-    function getErrorHTML(errorText) {
-      return `<div>${errorText}</div>`;
-    }
-
-    function getErrorsHTML(errors) {
-      let errorHTMLText = "";
-      errors.forEach((error) => {
-        errorHTMLText += getErrorHTML(error);
-      });
-      return errorHTMLText;
-    }
-
-    //#endregion
   }
 
   //#endregion
 
   return (
-    <div className="back-image">
-      <div id="InputValid" className="container max-w-600">
+    <div className={backImage["back-image"]}>
+      <div className={`container ${s["max-w-600"]}`}>
         <div className="row">
-          <div className="white-block">
-            <div className="user-account">
+          <div className={s["white-block"]}>
+            <div className={s["user-account"]}>
               <h2 className="text-center">User Login</h2>
 
               <form onSubmit={OnSubmitForm}>
@@ -179,6 +157,7 @@ export default function Login(props) {
                   validateValue={validateUserName}
                   setValidateValue={setValidateUserName}
                   placeholder={"User name or Email"}
+                  errorValue={userNameErrValue}
                   errorText={userNameErrText}
                 />
 
@@ -188,31 +167,37 @@ export default function Login(props) {
                   validateValue={validatePassword}
                   setValidateValue={setValidatePassword}
                   placeholder={"Password"}
+                  errorValue={passwordErrValue}
                   errorText={passwordErrText}
+                  type={"password"}
                 />
 
-                <ButtonLoading submitted={btnSubmitted} text={"Login"} />
-                <ErrorMessage
-                  show={validateResponse}
-                  errorText={responseErrText}
-                />
+                <ButtonLoad submitted={btnSubmitted}>Login</ButtonLoad>
+                <ErrorMessage show={validateResponse}>
+                  {responseErrText}
+                </ErrorMessage>
               </form>
 
-              <div className="user-option d-flex flex-column flex-sm-row justify-content-sm-between">
-                <div className="checkbox-label col text-start">
+              <div
+                className={`${s["user-option"]} d-flex flex-column flex-sm-row justify-content-sm-between`}
+              >
+                <div className={`${s["checkbox-label"]} col text-start`}>
                   <CheckBox checked={keepLogged} setChecked={setKeepLogged}>
                     Keep me logged in
                   </CheckBox>
                 </div>
                 <div className="mt-2 col text-start text-sm-end">
-                  <NavLink className={"nav-a"} to={"/soon"}>
+                  <NavLink className={s["nav-a"]} to={"/soon"}>
                     Forgot password
                   </NavLink>
                 </div>
               </div>
             </div>
           </div>
-          <NavLink className="btn my-btn-primary" to={"/sign-up"}>
+          <NavLink
+            className={`btn ${s["my-btn-primary"]}`}
+            to={"/registration"}
+          >
             Create a New Account
           </NavLink>
         </div>

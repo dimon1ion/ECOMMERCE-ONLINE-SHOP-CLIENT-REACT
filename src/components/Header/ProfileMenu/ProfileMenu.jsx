@@ -1,25 +1,25 @@
-import { GetProfileFromCookie } from "../Store/functions";
-import { useSelector } from "react-redux";
+// import { GetProfileFromCookie } from "../Store/functions";
 import { NavLink } from "react-router-dom";
+import ServerPath from "../../../enums/ServerPath";
 import s from "../Header.module.scss";
 
 
 export default function ProfileMenu() {
-    const serverPath = useSelector((state) => state.server.path);
-    const profile = GetProfileFromCookie(serverPath);
+    const serverPath = ServerPath.SERVERPATH;
+    // const profile = GetProfileFromCookie(serverPath);
     const activeLink = ({ isActive }) => s["nav-link"] + " " + (isActive ? s["active"] : "");
-    if (profile !== null) {
-      return (
-        <li className="d-flex nav-item align-items-center ps-md-4">
-        <NavLink to={"/sign-in"} className={({ isActive }) => `btn ${s["my-btn-primary"]} ${(isActive ? s["active-btn"] : "")}`}>
-          Change Profile
-        </NavLink>
-        <NavLink to={`/${profile.name}`} >
-          <img src={profile.Thumbnail} className={s["thumbnail"]}/>
-        </NavLink>
-      </li>
-      );
-    } else {
+    // if (profile !== null) {
+    //   return (
+    //     <li className="d-flex nav-item align-items-center ps-md-4">
+    //     <NavLink to={"/sign-in"} className={({ isActive }) => `btn ${s["my-btn-primary"]} ${(isActive ? s["active-btn"] : "")}`}>
+    //       Change Profile
+    //     </NavLink>
+    //     <NavLink to={`/${profile.name}`} >
+    //       <img src={profile.Thumbnail} className={s["thumbnail"]}/>
+    //     </NavLink>
+    //   </li>
+    //   );
+    // }
       return (
         <li className="d-flex nav-item align-items-center ps-md-4">
           <svg
@@ -36,14 +36,13 @@ export default function ProfileMenu() {
             />
           </svg>
           {/* <img classNameн="user-ico" src="images/user-ico.svg" /> */}
-          <NavLink to={"/sign-in"} className={activeLink}>
+          <NavLink to={"/login"} className={activeLink}>
             SIQN IN
           </NavLink>
           <span>/</span>
-          <NavLink to={"/sign-up"} className={activeLink}>
+          <NavLink to={"/registration"} className={activeLink}>
             REQISTER
           </NavLink>
         </li>
       );
-    }
   }

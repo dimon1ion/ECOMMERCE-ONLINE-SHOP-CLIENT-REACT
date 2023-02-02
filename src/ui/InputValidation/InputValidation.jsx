@@ -6,6 +6,7 @@ export default function InputValidation({
   setInputValue,
   validateValue,
   setValidateValue,
+  errorValue,
   errorText,
   placeholder,
   type = "text"
@@ -13,7 +14,7 @@ export default function InputValidation({
 
   const handleChange = ({ target: { value } }) => {
     setInputValue(value);
-    if (value != errorText) {
+    if (value !== errorValue) {
       setValidateValue(true);
     } else {
       setValidateValue(false);
@@ -21,18 +22,18 @@ export default function InputValidation({
   };
 
   return (
-    <>
+    <div className={s["m-bottom"]}>
       <input
         type={type}
         className={`form-control ${s["form-input"]} ${
-          validateValue ? "" : " exception"
+          validateValue ? "" : s["exception"]
         }`}
         placeholder={placeholder}
         value={inputValue}
         onChange={handleChange}
       />
-      <ErrorMessage show={validateValue} errorText={errorText} />
-    </>
+      <ErrorMessage show={validateValue}>{errorText}</ErrorMessage>
+    </div>
   );
 
 }

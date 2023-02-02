@@ -6,6 +6,7 @@ import "./assets/styles/_variables.scss";
 import Footer from './components/Footer';
 import Header from './components/Header';
 import { Routes, Route } from "react-router-dom";
+import Login from './pages/Login';
 // import SignIn from './Pages/Sign in/signIn';
 // import SignUp from './Pages/Sign up/signUp';
 // import Profile from './Pages/Profile/profile';
@@ -17,7 +18,7 @@ function App() {
       <Header/>
 
       <Routes>
-        {/* <Route path="sign-in" element={<SignIn/>}/> */}
+        <Route path="login" element={<Login/>}/>
         {/* <Route path="sign-up" element={<SignUp/>}/> */}
         {/* <Route path="categories/*" element={<Categories/>}/> */}
         {/* <Route path=":name" element={<Profile/>}/> */}

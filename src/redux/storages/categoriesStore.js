@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit"
 export const categoriesStore = createSlice({
     name: "categories",
     initialState:{
-        getAllPath: "/api/Category/get/all",
+        // getAllPath: "/api/Category/get/all",
         // allCities: undefined,
         allCategoriesSelectType: undefined,
         allCategories: undefined,
@@ -13,7 +13,7 @@ export const categoriesStore = createSlice({
     reducers:{
         initCategories: (state, { payload }) => {
             // state.canChangeCategories = false;
-            let categories = action.payload;
+            let categories = payload;
             // console.log(categories);
             state.allCategories = categories;
             // state.allCategoriesSelectType = GenerateArrayForSelect(categories.mainCategories, categories.subCategories);

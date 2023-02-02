@@ -3,12 +3,13 @@ import { NavLink } from "react-router-dom";
 import logo from "../../assets/Images/logo.png";
 
 import s from "./Header.module.scss";
+import ProfileMenu from "./ProfileMenu";
 // import ProfileMenu from "./ProfileMenu";
 
 export default function Header(params) {
   function scrollUp() {
     let scrollup = document.getElementById(s["scrollup"]);
-    if (+window.scrollY >= 1) {
+    if (+window.scrollY >= 20) {
       scrollup.classList.add(s["show-scrollup"]);
     } else {
       scrollup.classList.remove(s["show-scrollup"]);
@@ -29,7 +30,7 @@ export default function Header(params) {
   }
 
   return (
-    <header>
+    <header id="head" >
       <nav className={`navbar navbar-expand-md ${s["navbar-lightGreen"]}`}>
         <div className="container">
           <NavLink to={"/"} replace className={s["navbar-brand"]}>
@@ -74,12 +75,12 @@ export default function Header(params) {
                   FAQ
                 </NavLink>
               </li>
-              {/* <ProfileMenu /> */}
+              <ProfileMenu />
             </ul>
           </div>
         </div>
       </nav>
-      <a id="scrollup" href="#head"></a>
+      <a id={s["scrollup"]} href="#head"></a>
     </header>
   );
 }

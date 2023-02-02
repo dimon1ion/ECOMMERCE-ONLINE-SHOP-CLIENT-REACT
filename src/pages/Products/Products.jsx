@@ -13,6 +13,7 @@ import {
 } from "../../Store/functions";
 import { initCities } from "../../Store/citiesStore";
 import CategoriesMenu from "./CategoriesMenu/categoriesMenu";
+import ServerPath from "../../enums/ServerPath";
 
 function valuetext(value) {
   return `${value}$`;
@@ -52,7 +53,7 @@ export default function Products(prop) {
 
   //#region Store states
 
-  const serverPath = useSelector((state) => state.server.path);
+  const serverPath = ServerPath.SERVERPATH;
   const getAllCategoriesPath = useSelector(
     (state) => state.categoriesStore.getAllPath
   );

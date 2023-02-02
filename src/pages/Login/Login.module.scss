@@ -10,7 +10,7 @@
   .user-account {
     > h2 {
       margin-bottom: 35px;
-      color: $default-color;
+      color: var(--default-color);
       font-weight: 700;
       font-size: 22px;
     }
@@ -24,7 +24,7 @@
       color: #b9b9b9;
       .checkbox-label {
         :hover {
-          color: $default-color;
+          color: var(--default-color);
         }
       }
       .nav-a {
@@ -33,10 +33,10 @@
         transition: 0.3s;
       }
       .nav-a:hover {
-        color: $default-color;
+        color: var(--default-color);
       }
       .active {
-        color: $default-color;
+        color: var(--default-color);
       }
       @media (max-width: 768px) {
         .checkbox-label {
