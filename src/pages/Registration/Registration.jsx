@@ -119,7 +119,6 @@ export default function Registration() {
     setBtnSubmitted(true);
     setValidateResponse(true);
     let hasError = false;
-    fireVisible();
 
     // let fileImage = document.getElementById("file").files[0] ?? null;
     // let file = null;
