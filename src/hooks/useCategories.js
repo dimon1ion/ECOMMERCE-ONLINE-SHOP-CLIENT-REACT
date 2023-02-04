@@ -20,7 +20,7 @@ export default function useCategories(props) {
       ServerPath.SERVERPATH + ServerPath.GETALLCATEGORIES
     );
     if (response === null || !response.ok) {
-      console.log("error");
+      // console.log("error");
       return false;
     }
     const data = await response.json();
@@ -53,7 +53,7 @@ export default function useCategories(props) {
   const getAllCategoriesSelectType = async () => {
     if (allCategoriesSelectType === undefined) {
         if(await checkCategories() === false){
-            console.log("error");
+            // console.log("error");
             return undefined;
         }
     }

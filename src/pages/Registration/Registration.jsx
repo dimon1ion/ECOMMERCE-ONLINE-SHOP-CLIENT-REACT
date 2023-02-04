@@ -273,7 +273,7 @@ export default function Registration() {
     } else if (response.status === 400) {
       hasError = true;
       const errors = await response.json();
-      console.log(errors);
+      // console.log(errors);
 
       //#region /====> Response Validate <====/
 

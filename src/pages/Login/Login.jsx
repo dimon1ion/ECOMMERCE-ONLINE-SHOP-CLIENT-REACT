@@ -82,7 +82,7 @@ export default function Login(props) {
 
     const url = new URL(`${ServerPath.SERVERPATH}${ServerPath.LOGIN}`);
     url.searchParams.append("rememberMe", keepLogged);
-    console.log(url.toString());
+    // console.log(url.toString());
     const response = await putRequest(url.toString(), data);
 
     if (response === null) {
