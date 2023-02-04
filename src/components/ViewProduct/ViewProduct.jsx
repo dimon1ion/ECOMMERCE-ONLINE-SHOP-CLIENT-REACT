@@ -19,12 +19,12 @@ export default function ViewProduct({ id, price, name, category, date }) {
               <h5>$380.00</h5>
               <span className={s["product-name"]}>Samsung Galaxy S6 Edge</span>
               <div className={s["product-categorie"]}>
-                <span>Electronics & Gedgets</span>
+                <span>Samsung</span>
               </div>
             </div>
             <div className={`${s["additionally"]} d-none ${s["w-larger"]}`}>
               <div className={`${s["left-icons"]} d-flex`}>
-                <span>7 Jan 10:10 pm</span>
+                <span>3 Jan 10:10 pm</span>
                 {/* <span className={s["tags"]}>Used</span> */}
               </div>
               {/* <div className={s["icons"]}>
@@ -35,7 +35,7 @@ export default function ViewProduct({ id, price, name, category, date }) {
           </div>
           <div className={`${s["additionally"]} col-12 ${s["w-smaller"]}`}>
             <div className={`${s["left-icons"]} d-flex`}>
-              <span href="#">7 Jan 10:10 pm</span>
+              <span href="#">3 Jan 10:10 pm</span>
             </div>
           </div>
         </div>

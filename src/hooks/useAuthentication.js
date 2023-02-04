@@ -44,7 +44,7 @@ export default function useAuthentication(props) {
       const { firstName, lastName, email } = await response.json();
       setNameUser(firstName ?? "");
       setLastNameUser(lastName ?? "");
-      setLastNameUser(email ?? "");
+      setEmailUser(email ?? "");
       setIsAuthenticated(true);
     }
     

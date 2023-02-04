@@ -35,9 +35,9 @@ export default function Products(prop) {
   const [queryCategoryId, setQueryCategoryId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
   const maxProducts = 10;
 
   const [sendRequestByUseEffect, setSendRequestByUseEffect] = useState(false);
@@ -46,7 +46,7 @@ export default function Products(prop) {
   const [query, setQuery] = useSearchParams();
 
   // console.log(params, query);
-  console.log(selectedCategoryId);
+  // console.log(selectedCategoryId);
 
   const selectedValue = useMemo(
     () => Array.from(selectedKey).join(", ").replaceAll("_", " "),
@@ -68,15 +68,15 @@ export default function Products(prop) {
     }
   }, [query]);
 
-  console.log(sendRequestByUseEffect, page);
+  // console.log(sendRequestByUseEffect, page);
   
   useEffect(() => {
-    console.log("request")
+    // console.log("request")
     sendRequestToServer();
   }, [sendRequestByUseEffect, page]);
 
   const sendRquest = () => {
-    console.log("send")
+    // console.log("send")
     setSendRequestByUseEffect(state => !state);
   }
 
@@ -84,7 +84,7 @@ export default function Products(prop) {
     const categorieId = selectedCategoryId
       ? selectedCategoryId
       : queryCategoryId;
-      console.log(categorieId);
+      // console.log(categorieId);
     if (categorieId === null) {
       const url = new URL(
         ServerPath.SERVERPATH +
@@ -106,11 +106,14 @@ export default function Products(prop) {
       });
       if(sorted === false){
         return;
+          // searchParams.append("sorting", 1);
       }
-      
-
-
       // const response = await getRequest(url);
+      // if (response === null) {
+      //   return;
+      // }
+      // const data = await response.json();
+      // console.log(data);
     } else {
       setQuery(new URLSearchParams());
     }
@@ -194,7 +197,7 @@ export default function Products(prop) {
 
   //#endregion
 
-  const [sliderValue, setSliderValue] = useState([0, 0]);
+  const [sliderValue, setSliderValue] = useState([0, 10000]);
   const [categoriesView, setCategoriesView] = useState(undefined);
 
   //Dispatch
