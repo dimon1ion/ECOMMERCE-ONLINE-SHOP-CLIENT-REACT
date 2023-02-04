@@ -66,7 +66,7 @@ export default function Header(params) {
                 </NavLink>
               </li>
               <li className="nav-item ps-md-4">
-                <NavLink to={"/categories"} className={activeLink}>
+                <NavLink to={"/products"} className={activeLink}>
                 PRODUCT CATEGORIES
                 </NavLink>
               </li>

@@ -28,52 +28,111 @@ function valuetext(value) {
 
 export default function Products(prop) {
   const [selectedCategory, setSelectedCategory] = useState("Products");
-  const [selectedKey, setSelectedKey] = useState(new Set([""]));
+  const [selectedKey, setSelectedKey] = useState(new Set([]));
   const [sortingValues, setSortingValues] = useState([]);
 
   const [searchTitle, setSearchTitle] = useState("");
   const [queryCategoryId, setQueryCategoryId] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const maxProducts = 10;
+
+  const [sendRequestByUseEffect, setSendRequestByUseEffect] = useState(false);
 
   const params = useParams();
   const [query, setQuery] = useSearchParams();
 
-
-  console.log(searchTitle);
   // console.log(params, query);
+  console.log(selectedCategoryId);
 
   const selectedValue = useMemo(
     () => Array.from(selectedKey).join(", ").replaceAll("_", " "),
     [selectedKey]
   );
 
+  
+
+
   useEffect(() => {
     getSortingValues();
-
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setQueryCategoryId(query.get("category"));
-    sendRequest();
-  }, [query])
-
-  const sendRequest = async () => {
-    if(queryCategoryId === null){
-      const url = new URL(ServerPath.SERVERPATH + ServerPath.GETPRODUCTSBYTITLE + `/${searchTitle}`);
-      const response = await getRequest();
+    const qCategory = query.get("category");
+    setQueryCategoryId(qCategory);
+    if (qCategory) {
+      sendRquest();
     }
+  }, [query]);
+
+  console.log(sendRequestByUseEffect, page);
+  
+  useEffect(() => {
+    console.log("request")
+    sendRequestToServer();
+  }, [sendRequestByUseEffect, page]);
+
+  const sendRquest = () => {
+    console.log("send")
+    setSendRequestByUseEffect(state => !state);
   }
 
+  const sendRequestToServer = async () => {
+    const categorieId = selectedCategoryId
+      ? selectedCategoryId
+      : queryCategoryId;
+      console.log(categorieId);
+    if (categorieId === null) {
+      const url = new URL(
+        ServerPath.SERVERPATH +
+          ServerPath.GETPRODUCTSBYTITLE +
+          `/${searchTitle}`
+      );
+      const { searchParams } = url;
+      searchParams.append("page", page);
+      searchParams.append("onPage", maxProducts);
+
+      let sorted = false;
+      selectedKey.forEach((value) => {
+        const result = sortingValues.find(item => item.value === value);
+        if (result !== undefined) {
+          searchParams.append("sorting", result.key);
+          sorted = true;
+          return;
+        }
+      });
+      if(sorted === false){
+        return;
+      }
+      
+
+
+      // const response = await getRequest(url);
+    } else {
+      setQuery(new URLSearchParams());
+    }
+  };
+
   const getSortingValues = async () => {
-    const response = await getRequest(ServerPath.SERVERPATH + ServerPath.GETSORTING);
+    const response = await getRequest(
+      ServerPath.SERVERPATH + ServerPath.GETSORTING
+    );
     if (response === null) {
       return;
     }
-    const {$values:values} = await response.json();
+    const { $values: values } = await response.json();
     setSortingValues(values);
     setSelectedKey(new Set([values[0].value]));
-  }
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setSendRequestByUseEffect(state => !state);
+  };
 
   // const handleCategories = async () => {
   //   if (allCategories !== undefined) {
@@ -97,8 +156,6 @@ export default function Products(prop) {
   //     dispatch(initCities(result));
   //   }
   // }
-
-  
 
   // useEffect(() => {
   //   handleCategories();
@@ -221,7 +278,12 @@ export default function Products(prop) {
                     SEARCH
                   </button>
                 </form> */}
-                  <Search searchValue={searchTitle} setSearchValue={setSearchTitle}/>
+                <Search
+                  searchValue={searchTitle}
+                  setSearchValue={setSearchTitle}
+                  setSelectedCategoryId={setSelectedCategoryId}
+                  onSubmit={onSubmit}
+                />
               </div>
             </div>
           </div>
@@ -343,7 +405,7 @@ export default function Products(prop) {
                     <div className={`${["sort"]} d-flex align-items-center`}>
                       <span className="mx-2">Sort by:</span>
                       <div className="dropdown">
-                          {/* <Dropdown.Button color={"success"} shadow>
+                        {/* <Dropdown.Button color={"success"} shadow>
                             {selectedValue}
                           </Dropdown.Button> */}
                         <Dropdown>
@@ -362,7 +424,9 @@ export default function Products(prop) {
                             selectedKeys={selectedKey}
                             onSelectionChange={setSelectedKey}
                           >
-                            {sortingValues.map(({key, value}) => (<Dropdown.Item key={value}>{value}</Dropdown.Item>))}
+                            {sortingValues.map(({ key, value }) => (
+                              <Dropdown.Item key={value}>{value}</Dropdown.Item>
+                            ))}
                             {/* <Dropdown.Item key="text">Text</Dropdown.Item>
                             <Dropdown.Item key="number">Number</Dropdown.Item>
                             <Dropdown.Item key="date">Date</Dropdown.Item>
@@ -438,8 +502,8 @@ export default function Products(prop) {
                     <Pagination
                       color={"success"}
                       initialPage={1}
-                      total={10}
-                      onChange={(number) => console.log(number)}
+                      total={totalPage}
+                      onChange={(number) => setPage(number)}
                     />
                   </div>
                   {/* <div className="pagenation text-center">

@@ -30,7 +30,7 @@ export default function useAuthentication(props) {
       const url = new URL(
         ServerPath.SERVERPATH + ServerPath.SENDREFRESHTOKEN + `/${refreshLocalToken}`
       );
-      const response = putRequest(url.toString());
+      const response = await getRequest(url.toString());
       if (response === null || !response.ok) {
         return;
       }
@@ -42,7 +42,6 @@ export default function useAuthentication(props) {
     const response = await getRequestWithToken(ServerPath.SERVERPATH + ServerPath.GETUSERINFOBYTOKEN, Atoken);
     if (response !== null && response.ok) {
       const { firstName, lastName, email } = await response.json();
-      console.log(firstName, lastName, email);
       setNameUser(firstName ?? "");
       setLastNameUser(lastName ?? "");
       setLastNameUser(email ?? "");
