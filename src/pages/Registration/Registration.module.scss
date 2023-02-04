@@ -1,0 +1,51 @@
+
+  .max-w-600 {
+    max-width: 600px;
+  }
+  .white-block {
+    background: #fff;
+    width: 100%;
+    padding: 30px 30px 40px;
+    margin: 0 auto;
+    border-radius: 5px;
+    
+    .grey-label {
+      color: #b9b9b9;
+    }
+    .user-account {
+      > h2 {
+        margin-bottom: 35px;
+        color: var(--default-color);
+        font-weight: 700;
+        font-size: 22px;
+      }
+      .reg-item.error{
+        margin-bottom: 0.9em;
+      }
+      
+      .reg-file-input {
+        margin-bottom: 30px;
+      }
+    //   .input-react-select {
+    //     .css-1s2u09g-control,
+    //     .css-1pahdxg-control {
+    //       height: 44px;
+    //       font-size: 1em;
+    //     }
+    //   }
+      
+      .user-option {
+        color: #b9b9b9;
+        .checkbox-label {
+          border-bottom-width: 1px;
+          border-radius: .375rem;
+          :hover {
+            color: var(--default-color);
+          }
+        }
+        .active {
+          color: var(--default-color);
+        }
+      }
+    }
+  }

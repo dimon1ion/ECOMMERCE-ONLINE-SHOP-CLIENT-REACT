@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputValidation from "../../ui/InputValidation";
 import ErrorMessage from "../../ui/ErrorMessage";
@@ -11,11 +11,15 @@ import putRequest from "../../requests/putRequest";
 import jwtDecode from "jwt-decode";
 import Token from "../../enums/Token";
 import ServerPath from "../../enums/ServerPath";
+import AuthenticationContext from "../../contexts/Authentication.context";
 
 export default function Login(props) {
   //   const inputClasses = "form-control form-input";
 
   const navigate = useNavigate();
+  const { writeAccesToken, writeRefreshToken, checkAuthenticate } = useContext(
+    AuthenticationContext
+  );
 
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -48,21 +52,21 @@ export default function Login(props) {
 
     //#region /====> WEB Validate <====/
 
-    if (userName.length === 0) {
+    if (userName.trim().length === 0) {
       hasError = true;
       setValidateUserName(false);
       setUserNameErrValue(userName);
       setUserNameErrText("User name is empty!");
     } else {
-      setValidateUserName(true);
+      setUserNameErrValue(null);
     }
-    if (password.length === 0) {
+    if (password.trim().length === 0) {
       hasError = true;
       setValidatePassword(false);
       setPasswordErrValue(password);
       setPasswordErrText("Password is empty!");
     } else {
-      setValidatePassword(true);
+      setPasswordErrValue(null);
     }
 
     //#endregion
@@ -71,17 +75,15 @@ export default function Login(props) {
       setBtnSubmitted(false);
       return;
     }
-    console.log(userName);
-    console.log(password);
     let data = {
       email: userName,
       password: password,
     };
 
-    const response = await putRequest(
-      `${ServerPath.SERVERPATH}${ServerPath.LOGIN}`,
-      data
-    );
+    const url = new URL(`${ServerPath.SERVERPATH}${ServerPath.LOGIN}`);
+    url.searchParams.append("rememberMe", keepLogged);
+    console.log(url.toString());
+    const response = await putRequest(url.toString(), data);
 
     if (response === null) {
       setValidateResponse(false);
@@ -90,40 +92,32 @@ export default function Login(props) {
       );
       hasError = true;
     } else if (response.ok) {
-      try {
-        const result = await response.json();
-        const Atoken = jwtDecode(result.accessToken);
-        let expDate = new Date(+Atoken.exp * 1000);
-        console.log(expDate.toUTCString());
-        document.cookie = `${Token.ACCESTOKEN}=${
-          result.accessToken
-        };expires=${expDate.toUTCString()}`;
-        window.localStorage.setItem(Token.REFRESHTOKEN, result.refreshToken);
-      } catch (error) {
+      const { accessToken, refreshToken } = await response.json();
+      if (!writeAccesToken(accessToken)) {
         setValidateResponse(false);
         setResponseErrText(
           "Prevention is currently underway. Try again in a few minutes"
         );
         hasError = true;
       }
+      writeRefreshToken(refreshToken);
     } else if (response.status === 400) {
       hasError = true;
       let errors = await response.json();
-      console.log(errors);
       //#region /====> Response Validate <====/
-      if (errors["Login"] !== undefined) {
-        setValidateUserName(false);
-        setUserNameErrValue(userName);
-        setUserNameErrText(errors["Login"]);
-      }
-      if (errors["Password"] !== undefined) {
-        setValidatePassword(false);
-        setPasswordErrValue(password);
-        setPasswordErrText(errors["Password"]);
-      }
-      if (errors["Error"] !== undefined) {
+      // if (errors["Login"] !== undefined) {
+      //   setValidateUserName(false);
+      //   setUserNameErrValue(userName);
+      //   setUserNameErrText(errors["Login"]);
+      // }
+      // if (errors["Password"] !== undefined) {
+      //   setValidatePassword(false);
+      //   setPasswordErrValue(password);
+      //   setPasswordErrText(errors["Password"]);
+      // }
+      if (errors["error_message"] !== undefined) {
         setValidateResponse(false);
-        setResponseErrText(errors["Error"]);
+        setResponseErrText(errors["error_message"]);
       }
 
       //#endregion
@@ -134,9 +128,8 @@ export default function Login(props) {
     if (hasError) {
       setBtnSubmitted(false);
     } else {
-      navigate("/home");
-      console.log("Vse ok");
-      //   window.location.reload(false);
+      checkAuthenticate();
+      navigate("/profile");
     }
   }
 
@@ -156,9 +149,10 @@ export default function Login(props) {
                   setInputValue={setUserName}
                   validateValue={validateUserName}
                   setValidateValue={setValidateUserName}
-                  placeholder={"User name or Email"}
+                  placeholder={"Email"}
                   errorValue={userNameErrValue}
                   errorText={userNameErrText}
+                  type={"email"}
                 />
 
                 <InputValidation
@@ -172,7 +166,14 @@ export default function Login(props) {
                   type={"password"}
                 />
 
-                <ButtonLoad submitted={btnSubmitted}>Login</ButtonLoad>
+                <ButtonLoad
+                  submitted={btnSubmitted}
+                  disabled={
+                    !validateUserName || !validatePassword
+                  }
+                >
+                  Login
+                </ButtonLoad>
                 <ErrorMessage show={validateResponse}>
                   {responseErrText}
                 </ErrorMessage>
@@ -187,7 +188,10 @@ export default function Login(props) {
                   </CheckBox>
                 </div>
                 <div className="mt-2 col text-start text-sm-end">
-                  <NavLink className={s["nav-a"]} to={"/soon"}>
+                  <NavLink
+                    className={`${s["nav-a"]} ${s["unselect"]}`}
+                    to={"/soon"}
+                  >
                     Forgot password
                   </NavLink>
                 </div>

@@ -1,18 +1,25 @@
-
-
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-// import Box from "@mui/material/Box";
+import { useContext, useEffect, useMemo, useState } from "react";
+// import { useSelector, useDispatch } from "react-redux";
 import Slider from "@mui/material/Slider";
 import Select from "react-select";
-import { CategoriesLoad, CitiesLoad } from "../../Store/dataFunctions";
-import { initCategories } from "../../Store/categoriesStore";
-import {
-  GenerateArrayForSelect,
-  GenerateCategoriesView,
-} from "../../Store/functions";
-import { initCities } from "../../Store/citiesStore";
-import CategoriesMenu from "./CategoriesMenu/categoriesMenu";
+// import { CategoriesLoad, CitiesLoad } from "../../Store/dataFunctions";
+import { initCategories } from "../../redux/storages/categoriesStore";
+// import {
+//   GenerateArrayForSelect,
+//   GenerateCategoriesView,
+// } from "../../Store/functions";
+// import { initCities } from "../../Store/citiesStore";
+// import CategoriesMenu from "./CategoriesMenu";
+// import ServerPath from "../../enums/ServerPath";
+import getRequest from "../../requests/getRequest";
+import CategoriesContext from "../../contexts/Categories.context";
+import backImage from "../../assets/styles/backImage.module.scss";
+import s from "./Products.module.scss";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
+import Search from "../../components/Search/Search";
+import ViewProduct from "../../components/ViewProduct/ViewProduct";
+import CategoriesMenu from "../../components/CategoriesMenu";
+import { Dropdown, Pagination } from "@nextui-org/react";
 import ServerPath from "../../enums/ServerPath";
 
 function valuetext(value) {
@@ -20,79 +27,132 @@ function valuetext(value) {
 }
 
 export default function Products(prop) {
-  async function handleCategories() {
-    let result = await CategoriesLoad(serverPath + getAllCategoriesPath);
-    if (result != null) {
-      dispatch(initCategories(result));
-      setCategoriesView(GenerateCategoriesView(result));
-    }
-  }
-  async function handleCities() {
-    let result = await CitiesLoad(serverPath + getAllCitiesPath);
-    if (result != null) {
-      dispatch(initCities(result));
-    }
-  }
+  const [selectedCategory, setSelectedCategory] = useState("Products");
+  const [selectedKey, setSelectedKey] = useState(new Set([""]));
+  const [sortingValues, setSortingValues] = useState([]);
+
+  const [searchTitle, setSearchTitle] = useState("");
+  const [queryCategoryId, setQueryCategoryId] = useState(null);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+
+  const params = useParams();
+  const [query, setQuery] = useSearchParams();
+
+
+  console.log(searchTitle);
+  // console.log(params, query);
+
+  const selectedValue = useMemo(
+    () => Array.from(selectedKey).join(", ").replaceAll("_", " "),
+    [selectedKey]
+  );
 
   useEffect(() => {
-    console.log(canChangeCategories);
-    console.log(canChangeCities);
-    if (canChangeCategories === true) {
-        handleCategories();
-    } else {
-        setCategoriesView(GenerateCategoriesView(allCategories));
-    }
-    if (canChangeCities === true) {
-        handleCities();
-    }
+    getSortingValues();
 
-    // if (categories === undefined && allCategories !== undefined) {
-    //   setCategories(GenerateArrayForSelect(allCategories));
-    // }
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    setQueryCategoryId(query.get("category"));
+    sendRequest();
+  }, [query])
+
+  const sendRequest = async () => {
+    if(queryCategoryId === null){
+      const url = new URL(ServerPath.SERVERPATH + ServerPath.GETPRODUCTSBYTITLE + `/${searchTitle}`);
+      const response = await getRequest();
+    }
+  }
+
+  const getSortingValues = async () => {
+    const response = await getRequest(ServerPath.SERVERPATH + ServerPath.GETSORTING);
+    if (response === null) {
+      return;
+    }
+    const {$values:values} = await response.json();
+    setSortingValues(values);
+    setSelectedKey(new Set([values[0].value]));
+  }
+
+  // const handleCategories = async () => {
+  //   if (allCategories !== undefined) {
+  //     return;
+  //   }
+
+  //   // let result = await CategoriesLoad(serverPath + getAllCategoriesPath);
+  //   const response = await getRequest(ServerPath.SERVERPATH + ServerPath.GETALLCATEGORIES);
+  //   if (response === null || !response.ok) {
+  //     console.log("error");
+  //     return;
+  //   }
+  //   const data = await response.json();
+  //   console.log(data);
+  //   dispatch(initCategories(data));
+  //   // setCategoriesView(GenerateCategoriesView(result));
+  // }
+  // async function handleCities() {
+  //   let result = await CitiesLoad(serverPath + getAllCitiesPath);
+  //   if (result != null) {
+  //     dispatch(initCities(result));
+  //   }
+  // }
+
+  
+
+  // useEffect(() => {
+  //   handleCategories();
+  // if (canChangeCategories === true) {
+  //     handleCategories();
+  // } else {
+  //     setCategoriesView(GenerateCategoriesView(allCategories));
+  // }
+  // if (canChangeCities === true) {
+  //     handleCities();
+  // }
+
+  // if (categories === undefined && allCategories !== undefined) {
+  //   setCategories(GenerateArrayForSelect(allCategories));
+  // }
+  // }, []);
 
   //#region Store states
 
-  const serverPath = ServerPath.SERVERPATH;
-  const getAllCategoriesPath = useSelector(
-    (state) => state.categoriesStore.getAllPath
-  );
-  const getAllCitiesPath = useSelector((state) => state.citiesStore.getAllPath);
+  // const getAllCategoriesPath = useSelector(
+  //   (state) => state.categoriesStore.getAllPath
+  // );
+  // const getAllCitiesPath = useSelector((state) => state.citiesStore.getAllPath);
 
-  const categoriesSelect = useSelector(
-    (state) => state.categoriesStore.allCategoriesSelectType
-  );
-  const allCategories = useSelector(
-    (state) => state.categoriesStore.allCategories
-  );
-  const cities = useSelector((state) => state.citiesStore.allCitiesSelectType);
+  // const categoriesSelect = useSelector(
+  //   (state) => state.categoriesStore.allCategoriesSelectType
+  // );
+  // const { allCategories, allCategoriesSelectType:categoriesSelect } = useSelector(
+  //   (state) => state.categoriesStore
+  // );
+  // const cities = useSelector((state) => state.citiesStore.allCitiesSelectType);
 
-  const canChangeCategories = useSelector(
-    (state) => state.categoriesStore.canChangeCategories
-  );
-  const canChangeCities = useSelector(
-    (state) => state.citiesStore.canChangeCities
-  );
+  // const canChangeCities = useSelector(
+  //   (state) => state.citiesStore.canChangeCities
+  // );
 
   //#endregion
 
-  const [sliderValue, setSliderValue] = React.useState([0, 20]);
-  const [maximumPrice, setЬaximumPrice] = React.useState(200);
-  const [categoriesView, setCategoriesView] = React.useState(undefined);
+  const [sliderValue, setSliderValue] = useState([0, 0]);
+  const [categoriesView, setCategoriesView] = useState(undefined);
 
   //Dispatch
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   //Local states
-  //   const [categories, setCategories] = React.useState(undefined);
+  //   const [categories, setCategories] = useState(undefined);
 
   //#region Functions
 
   const handleChangeSliderValue = (event, newValue) => {
     if (+newValue[0] < 0) {
       newValue[0] = 0;
-    } else if (+newValue[1] > maximumPrice) {
-      newValue[1] = maximumPrice;
+    } else if (+newValue[1] > maxPrice) {
+      newValue[1] = maxPrice;
     }
     setSliderValue(newValue);
   };
@@ -109,133 +169,30 @@ export default function Products(prop) {
 
   return (
     <div>
-      <section id="Categories" className="back-image">
+      <section className={`${backImage["back-image"]} ${s["categories"]}`}>
         <div className="container">
-          <nav className="navigation">
+          <nav className={s["navigation"]}>
             <ul>
               <li>
-                <a href="../index.html">Home</a>
+                <NavLink to={"/home"}>Home</NavLink>
               </li>
-              <li>
-                <a href="#" className="headerCategory">
-                  Category
-                </a>
-              </li>
+              <li>{selectedCategory}</li>
             </ul>
-            <h2 className="name-categorie headerCategory">Category </h2>
+            <h2 className={`${s["name-categorie"]} headerCategory`}>
+              Category{" "}
+            </h2>
           </nav>
           <div className="row">
             <div className="d-flex justify-content-center">
-              <div className="banner w-100 mb-3">
-                <form className="input-group search">
-                  {/* <div className="dropdown col-12 col-md-6 col-lg-2">
-                    <button
-                      id="categoryForChange"
-                      className="btn btn-white dropdown-toggle w-100"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Select Category
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Cars & Vehicles
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Electrics & Gedgets
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Real Estate
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Sports & Games
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Fshion & Beauty
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Pets & Animals
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Home Appliances
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Matrimony Services
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Miscellaneous{" "}
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Job Openings{" "}
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeCategory(event)"
-                        >
-                          Books & Magazines
-                        </a>
-                      </li>
-                    </ul>
-                  </div> */}
+              <div className={`${s["banner"]} w-100 mb-3`}>
+                {/* <form className={`input-group ${s["search"]}`}>
                   <Select
                     className={
                       "col-12 col-md-6 col-lg-3 input-react-select" +
                       (false ? "" : " exception")
                     }
                     isMulti={false}
-                    options={categoriesSelect}
+                    // options={categoriesSelect}
                     // onChange={(newValue) =>
                     //   OnChangeSelect(
                     //     newValue,
@@ -245,72 +202,8 @@ export default function Products(prop) {
                     //   )
                     // }
                     placeholder="Select Category"
-                    isLoading={categoriesSelect === undefined ? true : false}
-                    isClearable={true}
-                    isSearchable={true}
-                  />
-                  {/* <div className="dropdown col-12 col-md-6 col-lg-3">
-                    <button
-                      id="locationForChange"
-                      className="btn btn-white dropdown-toggle w-100"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Select Location
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeLocation(event)"
-                        >
-                          United Kingdom
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeLocation(event)"
-                        >
-                          United States
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeLocation(event)"
-                        >
-                          China
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          className="my-dropdown-item"
-                          onclick="changeLocation(event)"
-                        >
-                          Russia
-                        </a>
-                      </li>
-                    </ul>
-                  </div> */}
-                  <Select
-                    className={
-                      "col-12 col-md-6 col-lg-3 input-react-select" +
-                      (false ? "" : " exception")
-                    }
-                    isMulti={false}
-                    options={cities}
-                    // onChange={(newValue) =>
-                    //   OnChangeSelect(
-                    //     newValue,
-                    //     setCityValue,
-                    //     setValidateCity,
-                    //     cityErrText
-                    //   )
-                    // }
-                    placeholder="Select City"
-                    isLoading={cities === undefined ? true : false}
+                    // isLoading={categoriesSelect === undefined ? true : false}
+                    isLoading={ true }
                     isClearable={true}
                     isSearchable={true}
                   />
@@ -327,52 +220,57 @@ export default function Products(prop) {
                   >
                     SEARCH
                   </button>
-                </form>
+                </form> */}
+                  <Search searchValue={searchTitle} setSearchValue={setSearchTitle}/>
               </div>
             </div>
           </div>
 
-          <div className="categories-info" id="CollapseParent">
-            <div className="row">
-              <div className="filter col-lg-3 col-md-4">
-                <div className="filter-item position-relative">
+          <div className={s["categories-info"]} id="CollapseParent">
+            <div className={`row ${s["row"]}`}>
+              <div className={`filter ${s["filter"]} col-lg-3 col-md-4`}>
+                <div
+                  className={`filter-item ${s["filter-item"]} position-relative`}
+                >
                   <p>
                     <button
-                      className="my-btn-filter d-flex justify-content-between"
+                      className={`${s["my-btn-filter"]} d-flex justify-content-between`}
                       type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#allCategories"
                       aria-expanded="false"
                       aria-controls="allCategories"
-                      onclick="closePrevFilter(event)"
+                      // onClick="closePrevFilter(event)"
                     >
                       <span>All Categories</span>
-                      <div className="liquid"></div>
+                      <div className={s["liquid"]}></div>
                     </button>
                   </p>
                   <div
-                    className="collapse show"
+                    className={`collapse ${s["collapse"]} show`}
                     id="allCategories"
                     data-bs-parent="#CollapseParent"
                   >
-                    <div className="card card-body">
-                      <CategoriesMenu categories={categoriesView}/>
+                    <div
+                      className={`card ${s["card"]} card-body ${s["card-body"]}`}
+                    >
+                      <CategoriesMenu />
                     </div>
                   </div>
                 </div>
-                <div className="filter-item">
+                <div className={s["filter-item"]}>
                   <p>
                     <button
-                      className="my-btn-filter d-flex justify-content-between collapsed"
+                      className={`${s["my-btn-filter"]} d-flex justify-content-between collapsed ${s["collapsed"]}`}
                       type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#collapseCondition"
                       aria-expanded="false"
                       aria-controls="collapseCondition"
-                      onclick="closePrevFilter(event)"
+                      // onClick="closePrevFilter(event)"
                     >
                       <span>Price</span>
-                      <div className="liquid"></div>
+                      <div className={s["liquid"]}></div>
                     </button>
                   </p>
                   <div
@@ -380,78 +278,116 @@ export default function Products(prop) {
                     id="collapseCondition"
                     data-bs-parent="#CollapseParent"
                   >
-                    <div className="card card-body">
-                        {/* <li><input id="filterNew" type="checkbox" className="filter-input"
+                    <div
+                      className={`card ${s["card"]} card-body ${s["card-body"]} ${s["scroll-hidden"]}`}
+                    >
+                      {/* <li><input id="filterNew" type="checkbox" className="filter-input"
                                                 onclick="clickfilterInputNewUsed(event)"/>New</li>
                                         <li><input id="filterUsed" type="checkbox" className="filter-input"
                                                 onclick="clickfilterInputNewUsed(event)"/>Used</li> */}
-                          <div className="d-flex">
-                            <input
-                              type="number"
-                              className="border border-dark w-100 text-center rounded"
-                              value={sliderValue[0]}
-                              onChange={(event) => {
-                                handleChangeSliderValue(null, [
-                                  event.target.value,
-                                  sliderValue[1],
-                                ]);
-                              }}
-                              onBlur={() => {
-                                blurSliderValues();
-                              }}
-                            />
-                            <span className="w-25 d-flex justify-content-center">
-                              -
-                            </span>
-                            <input
-                              type="number"
-                              className="border border-dark w-100 text-center rounded"
-                              value={sliderValue[1]}
-                              onChange={(event) => {
-                                handleChangeSliderValue(null, [
-                                  sliderValue[0],
-                                  event.target.value,
-                                ]);
-                              }}
-                              onBlur={() => {
-                                blurSliderValues();
-                              }}
-                            />
-                            <button className="w-50 ms-2 border border-light rounded">Ok</button>
-                          </div>
-                          <Slider
-                            getAriaLabel={() => "Minimum distance"}
-                            value={sliderValue}
-                            onChange={handleChangeSliderValue}
-                            valueLabelDisplay="auto"
-                            getAriaValueText={valuetext}
-                            max={200}
-                          />
+                      <div className="d-flex">
+                        <input
+                          type="number"
+                          className="border border-dark w-100 text-center rounded"
+                          value={sliderValue[0]}
+                          onChange={(event) => {
+                            handleChangeSliderValue(null, [
+                              event.target.value,
+                              sliderValue[1],
+                            ]);
+                          }}
+                          onBlur={() => {
+                            blurSliderValues();
+                          }}
+                        />
+                        <span className="w-25 d-flex justify-content-center">
+                          -
+                        </span>
+                        <input
+                          type="number"
+                          className="border border-dark w-100 text-center rounded"
+                          value={sliderValue[1]}
+                          onChange={(event) => {
+                            handleChangeSliderValue(null, [
+                              sliderValue[0],
+                              event.target.value,
+                            ]);
+                          }}
+                          onBlur={() => {
+                            blurSliderValues();
+                          }}
+                        />
+                        {/* <button className="w-50 ms-2 border border-light rounded">
+                          Ok
+                        </button> */}
+                      </div>
+                      <Slider
+                        getAriaLabel={() => "Minimum distance"}
+                        value={sliderValue}
+                        onChange={handleChangeSliderValue}
+                        valueLabelDisplay="auto"
+                        getAriaValueText={valuetext}
+                        min={minPrice}
+                        max={maxPrice}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-8 col-lg-9">
-                <div className="white-block info">
-                  <div className="feature d-flex justify-content-between align-items-center">
+                <div className={`${s["white-block"]} ${s["info"]}`}>
+                  <div
+                    className={`${s["feature"]} d-flex justify-content-between align-items-center`}
+                  >
                     <h4>Publications</h4>
-                    <div className="sort d-flex align-items-center">
-                      <span>Sort by:</span>
+                    <div className={`${["sort"]} d-flex align-items-center`}>
+                      <span className="mx-2">Sort by:</span>
                       <div className="dropdown">
-                        <button
+                          {/* <Dropdown.Button color={"success"} shadow>
+                            {selectedValue}
+                          </Dropdown.Button> */}
+                        <Dropdown>
+                          <Dropdown.Button
+                            shadow
+                            color="success"
+                            css={{ tt: "capitalize" }}
+                          >
+                            {selectedValue}
+                          </Dropdown.Button>
+                          <Dropdown.Menu
+                            aria-label="Single selection actions"
+                            color="success"
+                            disallowEmptySelection
+                            selectionMode="single"
+                            selectedKeys={selectedKey}
+                            onSelectionChange={setSelectedKey}
+                          >
+                            {sortingValues.map(({key, value}) => (<Dropdown.Item key={value}>{value}</Dropdown.Item>))}
+                            {/* <Dropdown.Item key="text">Text</Dropdown.Item>
+                            <Dropdown.Item key="number">Number</Dropdown.Item>
+                            <Dropdown.Item key="date">Date</Dropdown.Item>
+                            <Dropdown.Item key="single_date">
+                              Single Date
+                            </Dropdown.Item>
+                            <Dropdown.Item key="iteration">
+                              Iteration
+                            </Dropdown.Item> */}
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        {/* <button
                           id="sortForChange"
-                          className="btn"
+                          className={`btn ${s["btn"]}`}
                           type="button"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
                           All
-                        </button>
-                        <ul className="dropdown-menu">
+                        </button> */}
+                        {/* <ul className={s["dropdown-menu"]}>
                           <li>
                             <a
-                              className="my-dropdown-item"
-                              onclick="changeSort(event)"
+                              className={s["my-dropdown-item"]}
+                              // onclick="changeSort(event)"
                             >
                               Newest(low)
                             </a>
@@ -488,50 +424,25 @@ export default function Products(prop) {
                               All
                             </a>
                           </li>
-                        </ul>
+                        </ul> */}
                       </div>
                     </div>
                   </div>
-                  <div id="product-items">
-                    <div className="loaing d-flex justify-content-center mt-5">
-                      {/* <img src="../gif/Gray_circles_rotate.gif" alt="loading.." className="w-25"/> */}
-                    </div>
-                    <div className="row">
-                      {/* <div className="ad-image item-image col-12 col-md-5 col-lg-4">
-                                      <img src="../data/phone.jpg" alt="Samsung Galaxy S6 Edge" />
-                                    </div>
-                                    <div className="col">
-                                      <div className="info">
-                                        <h5>$380.00</h5>
-                                        <a href="#" className="product-name">Samsung Galaxy S6 Edge</a>
-                                        <div className="product-categorie">
-                                          <a href="#">Electronics & Gedgets</a>
-                                        </div>
-                                      </div>
-                                      <div className="additionally d-none w-larger">
-                                        <div className="left-icons d-flex">
-                                          <a href="#">7 Jan 10:10 pm</a>
-                                          <a href="#" className="tags">Used</a>
-                                        </div>
-                                        <div className="icons">
-                                          <a href="#" className="nav-icon" title="Los Angeles"></a>
-                                          <a href="#" className="individual" title="Individual"></a>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="additionally col-12 w-smaller">
-                                      <div className="left-icons d-flex">
-                                        <a href="#">7 Jan 10:10 pm</a>
-                                        <a href="#" className="tags">Used</a>
-                                      </div>
-                                      <div className="icons">
-                                        <a href="#" className="nav-icon" title="Los Angeles"></a>
-                                        <a href="#" className="individual" title="Individual"></a>
-                                      </div>
-                                    </div> */}
+                  <div className={s["ad"]}>
+                    <div className="d-flex flex-column">
+                      <ViewProduct />
+                      <ViewProduct />
                     </div>
                   </div>
-                  <div className="pagenation text-center">
+                  <div className="text-center">
+                    <Pagination
+                      color={"success"}
+                      initialPage={1}
+                      total={10}
+                      onChange={(number) => console.log(number)}
+                    />
+                  </div>
+                  {/* <div className="pagenation text-center">
                     <ul className="pages">
                       <li>
                         <a href="#">‹</a>
@@ -567,7 +478,7 @@ export default function Products(prop) {
                         <a href="#">›</a>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* <div className="col-md-2 d-none d-lg-block">
@@ -580,12 +491,14 @@ export default function Products(prop) {
         </div>
       </section>
 
-      <nav id="postRek">
-        <div className="d-flex background">
+      <nav className={s["post-rek"]}>
+        <div className={`d-flex ${s["background"]}`}>
           <div className="container text-center">
-            <h2 className="">Do you have something-sell?</h2>
-            <h4 className="">Post your ad for free!</h4>
-            <a className="btn btn-green">Post Your Ad</a>
+            <h2 className="">
+              Our sales platform is one of the best platforms!
+            </h2>
+            <h4 className="">Developers' words</h4>
+            {/* <a className={`btn ${s["btn"]} ${s["btn-green"]}`}>Post Your Ad</a> */}
           </div>
         </div>
       </nav>

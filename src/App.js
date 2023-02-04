@@ -1,31 +1,76 @@
-// import logo from './logo.svg';
-import './App.scss';
+import "./App.scss";
 import "./assets/styles/_variables.scss";
-// import "./assets/styles/backImage.scss";
-// import "./assets/styles/inputValid.scss";
-import Footer from './components/Footer';
-import Header from './components/Header';
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import { Routes, Route } from "react-router-dom";
-import Login from './pages/Login';
-// import SignIn from './Pages/Sign in/signIn';
-// import SignUp from './Pages/Sign up/signUp';
+import Login from "./pages/Login";
+import Registration from "./pages/Registration";
+import AuthenticationContext from "./contexts/Authentication.context";
+import useAuthentication from "./hooks/useAuthentication";
+import Products from "./pages/Products";
+import useCategories from "./hooks/useCategories";
+import CategoriesContext from "./contexts/Categories.context";
 // import Profile from './Pages/Profile/profile';
 // import Categories from './Pages/Categories/categories';
 
 function App() {
+  const {
+    isAuthenticated,
+    nameUser,
+    lastNameUser,
+    emailUser,
+    getInitials,
+    writeAccesToken,
+    writeRefreshToken,
+    getCookie,
+    checkAuthenticate,
+    logOut,
+  } = useAuthentication();
+  const {
+    allCategories,
+    allCategoriesSelectType,
+    checkCategories,
+    clearCategories,
+  } = useCategories();
+
   return (
-    <div>
-      <Header/>
+    <>
+      <CategoriesContext.Provider
+        value={{
+          allCategories,
+          allCategoriesSelectType,
+          checkCategories,
+          clearCategories,
+        }}
+      >
+        <AuthenticationContext.Provider
+          value={{
+            isAuthenticated,
+            nameUser,
+            lastNameUser,
+            emailUser,
+            getInitials,
+            writeAccesToken,
+            writeRefreshToken,
+            checkAuthenticate,
+            getCookie,
+            logOut,
+          }}
+        >
+          <Header />
 
-      <Routes>
-        <Route path="login" element={<Login/>}/>
-        {/* <Route path="sign-up" element={<SignUp/>}/> */}
-        {/* <Route path="categories/*" element={<Categories/>}/> */}
-        {/* <Route path=":name" element={<Profile/>}/> */}
-      </Routes>
+          <Routes>
+            <Route path="login" element={<Login />} />
+            <Route path="registration" element={<Registration />} />
+            <Route path="products" element={<Products />} />
+            {/* <Route path="categories/*" element={<Categories/>}/> */}
+            {/* <Route path=":name" element={<Profile/>}/> */}
+          </Routes>
 
-      <Footer/>
-    </div>
+          <Footer />
+        </AuthenticationContext.Provider>
+      </CategoriesContext.Provider>
+    </>
     // <div className="App">
     //   <header className="App-header">
     //     <img src={logo} className="App-logo" alt="logo" />
@@ -42,7 +87,6 @@ function App() {
     //     </a>
     //   </header>
     // </div>
-
   );
 }
 

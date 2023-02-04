@@ -25,9 +25,9 @@ export default function Header(params) {
 
   const activeLink = ({ isActive }) => `nav-link ${s["nav-link"]} ${(isActive ? s["active"] : "")}`;
 
-  function changeColor() {
-    document.documentElement.style.setProperty("--default-color", "#eb3434");
-  }
+  // function changeColor() {
+  //   document.documentElement.style.setProperty("--default-color", "#eb3434");
+  // }
 
   return (
     <header id="head" >
@@ -80,7 +80,7 @@ export default function Header(params) {
           </div>
         </div>
       </nav>
-      <a id={s["scrollup"]} href="#head"></a>
+      <a id={s["scrollup"]} href="#head"> </a>
     </header>
   );
 }

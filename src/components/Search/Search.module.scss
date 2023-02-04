@@ -38,7 +38,8 @@
     }
     .input-react-select {
       .css-1s2u09g-control,
-      .css-1pahdxg-control {
+      .css-1pahdxg-control,
+      >div:nth-child(3) {
         height: 44px;
         font-size: 1em;
         color: #0a0a0a;
@@ -50,7 +51,7 @@
         border-bottom-right-radius: 0;
         transition: color 0.3s ease-in-out;
         &:hover{
-          color: $default-color;
+          color: var(--default-color);
         }
       }
       .css-1pahdxg-control{
@@ -73,10 +74,10 @@
       transition: color 0.3s ease-in-out;
     }
     .btn-white:hover {
-      color: $default-color;
+      color: var(--default-color);
     }
     .btn-green {
-      background-color: $default-color;
+      background-color: var(--default-color);
       color: #fff;
       font-weight: 400;
     }

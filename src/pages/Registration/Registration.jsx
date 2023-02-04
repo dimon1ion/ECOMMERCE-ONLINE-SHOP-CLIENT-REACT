@@ -1,47 +1,61 @@
-import "./signUp.scss";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-// import { initCities } from "../../Store/citiesStore";
-import Select from "react-select";
-// import ButtonLoading from "../Standalone/buttonLoad/ButtonLoad";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GenerateArrayForSelect, readJWT } from "../../Store/functions";
-// import { CitiesLoad } from "../../Store/dataFunctions";
+import InputValidation from "../../ui/InputValidation";
+import CheckBox from "../../ui/CheckBox";
+import ErrorMessage from "../../ui/ErrorMessage";
+import ButtonLoad from "../../ui/ButtonLoad";
+import s from "./Registration.module.scss";
+import backImage from "../../assets/styles/backImage.module.scss";
+import ServerPath from "../../enums/ServerPath";
+import Token from "../../enums/Token";
+import putRequest from "../../requests/putRequest";
+import jwtDecode from "jwt-decode";
+import { Modal, useModal, Button, Text } from "@nextui-org/react";
+import confetti from "canvas-confetti";
 
 export default function Registration() {
-  //On Load Component Function
-  
-//   async function handleCities(){
-//     let result = await CitiesLoad(serverPath + getAllCitiesPath);
-//     if (result != null) {
-//       dispatch(initCities(result));
-//     }
-//   }
-
-//   useEffect(() => {
-//     if (canChangeCities === true) {
-//       handleCities();
-//     }
-//     // if (cities === undefined && allCities !== undefined) {
-//     //   setCities(GenerateArrayForSelect(allCities));
-//     // }
-//   });
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  //Store states
-  const serverPath = useSelector((state) => state.server.path);
-//   const getAllCitiesPath = useSelector((state) => state.citiesStore.getAllPath);
-  // const allCities = useSelector((state) => state.citiesStore.allCities);
-//   const cities = useSelector((state) => state.citiesStore.allCitiesSelectType);
-//   const canChangeCities = useSelector((state) => state.citiesStore.canChangeCities);
+  const count = 200;
+  const defaults = {
+    origin: { y: 0.7 }
+  };
+  const fire = (particleRatio, opts) => {
+    confetti(Object.assign({}, defaults, opts, {
+      particleCount: Math.floor(count * particleRatio)
+    }));
+  }
+  const fireVisible = () => {
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  }
 
-  
+  const { setVisible, bindings } = useModal();
 
   //#region /====> For use in code <====/
 
-  const inputClasses = "form-control form-input";
   const regexEmailString =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const regexPasswordString =
@@ -51,22 +65,38 @@ export default function Registration() {
 
   //#endregion
 
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [agreement, setAgreement] = useState(false);
+
   //#region /====> ErrorText When was Submit <====/
 
-  const [userNameErrText, setUserNameErrText] = useState(null);
+  const [nameErrValue, setNameErrValue] = useState(null);
+  const [surnameErrValue, setSurnameErrValue] = useState(null);
+  const [middleNameErrValue, setMiddleNameErrValue] = useState(null);
+  const [emailErrValue, setEmailErrValue] = useState(null);
+  const [passwordErrValue, setPasswordErrValue] = useState(null);
+  const [phoneNumberErrValue, setPhoneNumberErrValue] = useState(null);
+
   const [nameErrText, setNameErrText] = useState(null);
   const [surnameErrText, setSurnameErrText] = useState(null);
   const [middleNameErrText, setMiddleNameErrText] = useState(null);
   const [emailErrText, setEmailErrText] = useState(null);
+  const [passwordErrText, setPasswordErrText] = useState(null);
+  const [confirmPasswordErrText, setConfirmPasswordErrText] = useState(null);
   const [phoneNumberErrText, setPhoneNumberErrText] = useState(null);
-//   const [cityErrText, setCityErrText] = useState(null);
   const [agreementErrText, setAgreementErrText] = useState(null);
+  const [responseErrText, setResponseErrText] = useState(null);
 
   //#endregion
 
   //#region /===> Valid input: True or False <====/
 
-  const [validateUserName, setValidateUserName] = useState(true);
   const [validateName, setValidateName] = useState(true);
   const [validateSurname, setValidateSurname] = useState(true);
   const [validateMiddleName, setValidateMiddleName] = useState(true);
@@ -74,216 +104,111 @@ export default function Registration() {
   const [validatePassword, setValidatePassword] = useState(true);
   const [validateConfirmPassword, setValidateConfirmPassword] = useState(true);
   const [validatePhoneNumber, setValidatePhoneNumber] = useState(true);
-//   const [validateCity, setValidateCity] = useState(true);
   const [validateAgreement, setValidateAgreement] = useState(true);
   const [validateResponse, setValidateResponse] = useState(true);
 
   //#endregion
 
   //Input Values
-//   const [cityValue, setCityValue] = useState("");
   const [btnSubmitted, setBtnSubmitted] = useState(false);
-  // const [cities, setCities] = useState(undefined);
 
   //#region /===> Functions <===/
-
-  function ClickCheckbox(event) {
-    let checkLabel = document.getElementById("checkLabel");
-    if (event.target.checked) {
-      checkLabel.classList.add("active");
-    } else {
-      checkLabel.classList.remove("active");
-    }
-    if (agreementErrText === event.target.checked) {
-      setValidateAgreement(false);
-    } else {
-      setValidateAgreement(true);
-    }
-  }
-
-  function OnChange(event, validationSet, textError) {
-    if (event.target.value != textError) {
-      validationSet(true);
-    } else {
-      validationSet(false);
-    }
-  }
-
-  function OnChangeSelect(newValue, setValue, validationSet, textError) {
-    let value = newValue?.value ?? "";
-    setValue(value);
-    if (value != textError) {
-      validationSet(true);
-    } else {
-      validationSet(false);
-    }
-  }
 
   async function SubmitRegistrationForm(event) {
     event.preventDefault();
     setBtnSubmitted(true);
-
-    //#region /====> Variables <====/
-
-    let userName = document.getElementById("userName").value;
-    let userNameError = document.getElementById("userNameError");
-    userNameError.innerHTML = "";
-
-    let name = document.getElementById("name").value;
-    let nameError = document.getElementById("nameError");
-    nameError.innerHTML = "";
-
-    let surname = document.getElementById("surname").value;
-    let surnameError = document.getElementById("surnameError");
-    surnameError.innerHTML = "";
-
-    let middleName = document.getElementById("middleName").value;
-    let middleNameError = document.getElementById("middleNameError");
-    middleNameError.innerHTML = "";
-
-    let email = document.getElementById("email").value;
-    let emailError = document.getElementById("emailError");
-    emailError.innerHTML = "";
-
-    let password = document.getElementById("password").value;
-    let passwordError = document.getElementById("passwordError");
-    passwordError.innerHTML = "";
-
-    let confirmPassword = document.getElementById("confirmPassword").value;
-    let confirmPasswordError = document.getElementById("confirmPasswordError");
-    confirmPasswordError.innerHTML = "";
-
-    let phoneNumber = document.getElementById("phoneNumber").value;
-    let phoneNumberError = document.getElementById("phoneNumberError");
-    phoneNumberError.innerHTML = "";
-
-    //cityValue
-    let cityError = document.getElementById("cityError");
-    cityError.innerHTML = "";
-
-    let fileImage = document.getElementById("file").files[0] ?? null;
-    let file = null;
-    if (fileImage !== null) {
-      file = new FormData();
-      file.append("formFile", fileImage, new Date().toISOString());
-    }
-
-    let agreement = document.getElementById("agreement").checked;
-    let agreementError = document.getElementById("agreementError");
-    agreementError.innerHTML = "";
-
-    let responseError = document.getElementById("responseError");
-    responseError.innerHTML = "";
     setValidateResponse(true);
-
     let hasError = false;
+    fireVisible();
 
-    //#endregion
+    // let fileImage = document.getElementById("file").files[0] ?? null;
+    // let file = null;
+    // if (fileImage !== null) {
+    //   file = new FormData();
+    //   file.append("formFile", fileImage, new Date().toISOString());
+    // }
 
     //#region /====> WEB Validate <====/
 
-    if (userName.length === 0) {
-      hasError = true;
-      setValidateUserName(false);
-      setUserNameErrText(userName);
-      userNameError.innerHTML += getErrorHTML("User name is empty!");
-    } else {
-      setUserNameErrText(null);
-    }
-    if (name.length === 0) {
+    if (name.trim().length === 0) {
       hasError = true;
       setValidateName(false);
-      setNameErrText(name);
-      nameError.innerHTML += getErrorHTML("Name is empty!");
+      setNameErrValue(name);
+      setNameErrText("Name is empty!");
     } else {
-      setNameErrText(null);
+      setNameErrValue(null);
     }
-    if (surname.length === 0) {
+    if (surname.trim().length === 0) {
       hasError = true;
       setValidateSurname(false);
-      setSurnameErrText(surname);
-      surnameError.innerHTML += getErrorHTML("Surname is empty!");
+      setSurnameErrValue(surname);
+      setSurnameErrText("Surname is empty!");
     } else {
-      setSurnameErrText(null);
+      setSurnameErrValue(null);
     }
-    if (middleName.length === 0) {
-      hasError = true;
-      setValidateMiddleName(false);
-      setMiddleNameErrText(surname);
-      middleNameError.innerHTML += getErrorHTML("Middle name is empty!");
-    } else {
-      setMiddleNameErrText(null);
-    }
-    if (!String(email).toLowerCase().match(regexEmailString)) {
+    if (!String(email).trim().toLowerCase().match(regexEmailString)) {
       hasError = true;
       setValidateEmail(false);
-      setEmailErrText(email);
+      setEmailErrValue(email);
       if (email.length === 0) {
-        emailError.innerHTML += getErrorHTML("Email is empty!");
+        setEmailErrText("Email is empty!");
       } else {
-        emailError.innerHTML += getErrorHTML("Email is wrong!");
+        setEmailErrText("Email is wrong format!");
       }
     } else {
-      setEmailErrText(null);
+      setEmailErrValue(null);
     }
+
     let passWrong = false;
-    if (password.length < 8) {
+    const cleanPassword = password.trim();
+
+    if (cleanPassword.length < 8) {
       passWrong = true;
-      passwordError.innerHTML += getErrorHTML(
-        "Minimum password length 8 characters"
-      );
-    } else if (password.length > 16) {
+      setPasswordErrText("Minimum password length 8 characters");
+    } else if (cleanPassword.length > 16) {
       passWrong = true;
-      passwordError.innerHTML += getErrorHTML(
-        "Maximum password length 16 characters"
-      );
+      setPasswordErrText("Maximum password length 16 characters");
     }
-    if (!String(password).match(regexPasswordString)) {
+    if (!String(cleanPassword).match(regexPasswordString)) {
       passWrong = true;
-      passwordError.innerHTML += getErrorHTML(
+      setPasswordErrText(
         "Password wrong format 1-Upper symbol 1-lower symbol 1-(#?!@$%^&*-) 1-Number"
       );
     }
     if (passWrong) {
       hasError = true;
       setValidatePassword(false);
+      setPasswordErrValue(password);
+    } else {
+      setPasswordErrValue(null);
     }
-    if (confirmPassword != password) {
+    if (confirmPassword.trim() !== cleanPassword) {
       setValidateConfirmPassword(false);
-      confirmPasswordError.innerHTML += getErrorHTML(
-        "Not equal to main password!"
-      );
+      setConfirmPasswordErrText("Not equal to main password!");
     }
+
     let phoneWrong = false;
-    if (phoneNumber.length === 0) {
+    const cleanPhone = phoneNumber.trim();
+
+    if (cleanPhone.length === 0) {
       phoneWrong = true;
-      phoneNumberError.innerHTML += getErrorHTML("Phone number is empty!");
-    } else if (!String(phoneNumber).match(regexPhoneString)) {
+      setPhoneNumberErrText("Phone number is empty!");
+    } else if (!String(cleanPhone).match(regexPhoneString)) {
       phoneWrong = true;
-      phoneNumberError.innerHTML += getErrorHTML("Phone number is wrong!");
+      setPhoneNumberErrText("Phone number is wrong!");
     }
     if (phoneWrong) {
       hasError = true;
       setValidatePhoneNumber(false);
-      setPhoneNumberErrText(phoneNumber);
+      setPhoneNumberErrValue(phoneNumber);
     } else {
-      setPhoneNumberErrText(null);
+      setPhoneNumberErrValue(null);
     }
 
-    if (cityValue.length === 0) {
-      hasError = true;
-      setValidateCity(false);
-      setCityErrText(cityValue);
-      cityError.innerHTML += getErrorHTML("City is empty!");
-    } else {
-      setCityErrText(null);
-    }
-
-    if (!(agreement === true)) {
+    if (agreement !== true) {
       hasError = true;
       setValidateAgreement(false);
-      setAgreementErrText(agreement);
-      agreementError.innerHTML += getErrorHTML("You must agree");
+      setAgreementErrText("You must agree");
     }
 
     //#endregion
@@ -293,395 +218,265 @@ export default function Registration() {
       return;
     }
 
-    let data = new FormData();
-    data.append("userName", userName);
-    data.append("name", name);
-    data.append("surname", surname);
-    data.append("middleName", middleName);
-    data.append("email", email);
-    data.append("phoneNumber", phoneNumber);
-    data.append("city", cityValue);
-    data.append("password", password);
-    data.append("passwordConfirm", confirmPassword);
-    if (fileImage !== null) {
-      data.append("formFile", fileImage, fileImage.name);
+    // let data = new FormData();
+    // data.append("userName", userName);
+    // data.append("name", name);
+    // data.append("surname", surname);
+    // data.append("middleName", middleName);
+    // data.append("email", email);
+    // data.append("phoneNumber", phoneNumber);
+    // data.append("city", cityValue);
+    // data.append("password", password);
+    // data.append("passwordConfirm", confirmPassword);
+    // if (fileImage !== null) {
+    //   data.append("formFile", fileImage, fileImage.name);
+    // }
+    let data = {
+      firstName: name,
+      lastName: surname,
+      email,
+      password,
+      passwordConfirmation: confirmPassword,
+      phoneNumber,
+    };
+    if (middleName.trim().length !== 0) {
+      data.middleName = middleName;
     }
-    try {
-      let response = await fetch(
-        `${serverPath}/api/Authentication/registration`,
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-      if (response.ok) {
-        let result = await response.json();
-        let Atoken = readJWT(result.accessToken);
-        let expDate = new Date(+Atoken.exp * 1000);
-        console.log(expDate.toUTCString());
-        if (Atoken !== null) {
-          document.cookie = `Atoken=${
-            result.accessToken
-          };expires=${expDate.toUTCString()}`;
-          window.localStorage.setItem("Rtoken", result.refreshToken);
-        } else {
-          setValidateResponse(false);
-          responseError.innerHTML = getErrorHTML("Error");
-          hasError = true;
-        }
-      } else if (response.status === 400) {
-        hasError = true;
-        let errors = await response.json();
-
-        //#region /====> Response Validate <====/
-
-        if (errors["UserName"] !== undefined) {
-          setValidateUserName(false);
-          setUserNameErrText(userName);
-          userNameError.innerHTML = getErrorsHTML(errors["UserName"]);
-        }
-        if (errors["Name"] !== undefined) {
-          setValidateName(false);
-          setNameErrText(name);
-          nameError.innerHTML = getErrorsHTML(errors["Name"]);
-        }
-        if (errors["Surname"] !== undefined) {
-          setValidateSurname(false);
-          setSurnameErrText(surname);
-          surnameError.innerHTML = getErrorsHTML(errors["Surname"]);
-        }
-        if (errors["MiddleName"] !== undefined) {
-          setValidateMiddleName(false);
-          setMiddleNameErrText(middleName);
-          middleNameError.innerHTML = getErrorsHTML(errors["MiddleName"]);
-        }
-        if (errors["Email"] !== undefined) {
-          setValidateEmail(false);
-          setEmailErrText(email);
-          emailError.innerHTML = getErrorsHTML(errors["Email"]);
-        }
-        if (errors["Password"] !== undefined) {
-          setValidatePassword(false);
-          passwordError.innerHTML = getErrorsHTML(errors["Password"]);
-        }
-        if (errors["PasswordConfirm"] !== undefined) {
-          setValidateConfirmPassword(false);
-          confirmPasswordError.innerHTML = getErrorsHTML(
-            errors["PasswordConfirm"]
-          );
-        }
-        if (errors["PhoneNumber"] !== undefined) {
-          setValidatePhoneNumber(false);
-          setPhoneNumberErrText(phoneNumber);
-          phoneNumberError.innerHTML = getErrorsHTML(errors["PhoneNumber"]);
-        }
-        if (errors["City"] !== undefined) {
-          setValidateCity(false);
-          setCityErrText(cityValue);
-          cityError.innerHTML = getErrorsHTML(errors["City"]);
-        }
-        if (errors["Error"] !== undefined) {
-          setValidateResponse(false);
-          responseError.innerHTML = getErrorsHTML(errors["Error"]);
-        }
-
-        //#endregion
-      } else {
-        hasError = true;
-      }
-    } catch (error) {
+    const response = await putRequest(
+      `${ServerPath.SERVERPATH}${ServerPath.REGISTRATION}`,
+      data
+    );
+    if (response === null) {
       setValidateResponse(false);
-      responseError.innerHTML = getErrorHTML("Server not responding");
+      setResponseErrText(
+        "Prevention is currently underway. Try again in a few minutes"
+      );
+      hasError = true;
+    } else if (response.ok) {
+      hasError = false;
+      // try {
+      //   const { accessToken, refreshToken } = await response.json();
+      //   const Atoken = jwtDecode(accessToken);
+      //   const expDate = new Date(+Atoken.exp * 1000);
+      //   console.log(expDate.toUTCString());
+      //   document.cookie = `${
+      //     Token.ACCESTOKEN
+      //   }=${accessToken};expires=${expDate.toUTCString()}`;
+      //   window.localStorage.setItem(Token.REFRESHTOKEN, refreshToken);
+      // } catch (error) {
+      //   setValidateResponse(false);
+      //   setResponseErrText(
+      //     "Prevention is currently underway. Try again in a few minutes"
+      //   );
+      //   hasError = true;
+      // }
+    } else if (response.status === 400) {
+      hasError = true;
+      const errors = await response.json();
+      console.log(errors);
+
+      //#region /====> Response Validate <====/
+
+      if (errors["FirstName"] !== undefined) {
+        setValidateName(false);
+        setNameErrValue(name);
+        setNameErrText(errors["FirstName"]);
+      }
+      if (errors["LastName"] !== undefined) {
+        setValidateSurname(false);
+        setSurnameErrValue(surname);
+        setSurnameErrText(errors["LastName"]);
+      }
+      if (errors["MiddleName"] !== undefined) {
+        setValidateMiddleName(false);
+        setMiddleNameErrValue(middleName);
+        setMiddleNameErrText(errors["MiddleName"]);
+      }
+      if (errors["Email"] !== undefined) {
+        setValidateEmail(false);
+        setEmailErrValue(email);
+        setEmailErrText(errors["Email"]);
+      }
+      if (errors["Password"] !== undefined) {
+        setValidatePassword(false);
+        setPasswordErrValue(password);
+        setPasswordErrText(errors["Password"]);
+      }
+      if (errors["PasswordConfirmation"] !== undefined) {
+        setValidateConfirmPassword(false);
+        setConfirmPasswordErrText(errors["PasswordConfirmation"]);
+      }
+      if (errors["PhoneNumber"] !== undefined) {
+        setValidatePhoneNumber(false);
+        setPhoneNumberErrValue(phoneNumber);
+        setPhoneNumberErrText(errors["PhoneNumber"]);
+      }
+      if (errors["error_message"] !== undefined) {
+        setValidateResponse(false);
+        setResponseErrText(errors["error_message"]);
+      }
+
+      //#endregion
+    } else {
       hasError = true;
     }
 
-    if (hasError) {
-      setBtnSubmitted(false);
-    } else {
-      navigate("/home");
-      window.location.reload(false);
+    if (!hasError) {
+      setVisible(true);
+      fireVisible();
     }
-
-    //#region /====> Functions in SubmitRegistrationForm <====/
-
-    function getErrorHTML(errorText) {
-      return `<div>${errorText}</div>`;
-    }
-
-    function getErrorsHTML(errors) {
-      let errorHTMLText = "";
-      errors.forEach((error) => {
-        errorHTMLText += getErrorHTML(error);
-      });
-      return errorHTMLText;
-    }
-
-    //#endregion
+    setBtnSubmitted(false);
   }
 
   //#endregion
 
   return (
-    <div id="signUp" className="back-image">
-      <div id="InputValid" className="container max-w-600">
+    <div className={backImage["back-image"]}>
+      <div className={`container ${s["max-w-600"]}`}>
         <div className="row">
-          <div className="white-block">
-            <div className="user-account">
+          <div className={s["white-block"]}>
+            <div className={s["user-account"]}>
               <h2 className="text-center">Create a Trade Account</h2>
               <form onSubmit={SubmitRegistrationForm}>
-                {/* UserName */}
-                <div
-                  className={"form-item" + (validateUserName ? "" : " error")}
-                >
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validateUserName ? "" : " exception")
-                    }
-                    placeholder="User name"
-                    id="userName"
-                    onChange={(event) =>
-                      OnChange(event, setValidateUserName, userNameErrText)
-                    }
-                  />
-                  <div
-                    id="userNameError"
-                    className="errorMessage"
-                    style={{ display: validateUserName ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Name */}
-                <div className={"form-item" + (validateName ? "" : " error")}>
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validateName ? "" : " exception")
-                    }
-                    placeholder="Name"
-                    id="name"
-                    onChange={(event) =>
-                      OnChange(event, setValidateName, nameErrText)
-                    }
-                  />
-                  <div
-                    id="nameError"
-                    className="errorMessage"
-                    style={{ display: validateName ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Surname */}
-                <div
-                  className={"form-item" + (validateSurname ? "" : " error")}
-                >
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validateSurname ? "" : " exception")
-                    }
-                    placeholder="Surname"
-                    id="surname"
-                    onChange={(event) =>
-                      OnChange(event, setValidateSurname, surnameErrText)
-                    }
-                  />
-                  <div
-                    id="surnameError"
-                    className="errorMessage"
-                    style={{ display: validateSurname ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Middle name */}
-                <div
-                  className={"form-item" + (validateMiddleName ? "" : " error")}
-                >
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validateMiddleName ? "" : " exception")
-                    }
-                    placeholder="Middle name"
-                    id="middleName"
-                    onChange={(event) =>
-                      OnChange(event, setValidateMiddleName, middleNameErrText)
-                    }
-                  />
-                  <div
-                    id="middleNameError"
-                    className="errorMessage"
-                    style={{ display: validateMiddleName ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Email */}
-                <div className={"form-item" + (validateEmail ? "" : " error")}>
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validateEmail ? "" : " exception")
-                    }
-                    placeholder="E-mail"
-                    id="email"
-                    onChange={(event) =>
-                      OnChange(event, setValidateEmail, emailErrText)
-                    }
-                  />
-                  <div
-                    id="emailError"
-                    className="errorMessage"
-                    style={{ display: validateEmail ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Password */}
-                <div
-                  className={"form-item" + (validatePassword ? "" : " error")}
-                >
-                  <input
-                    type="password"
-                    className={
-                      inputClasses + (validatePassword ? "" : " exception")
-                    }
-                    placeholder="Password"
-                    id="password"
-                    onChange={(event) =>
-                      OnChange(event, setValidatePassword, null)
-                    }
-                  />
-                  <div
-                    id="passwordError"
-                    className="errorMessage"
-                    style={{ display: validatePassword ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Confirm Password */}
-                <div
-                  className={
-                    "form-item" + (validateConfirmPassword ? "" : " error")
-                  }
-                >
-                  <input
-                    type="password"
-                    className={
-                      inputClasses +
-                      (validateConfirmPassword ? "" : " exception")
-                    }
-                    placeholder="Confirm Password"
-                    id="confirmPassword"
-                    onChange={(event) =>
-                      OnChange(event, setValidateConfirmPassword, null)
-                    }
-                  />
-                  <div
-                    id="confirmPasswordError"
-                    className="errorMessage"
-                    style={{ display: validateConfirmPassword ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* Mobile Number */}
-                <div
-                  className={
-                    "form-item" + (validatePhoneNumber ? "" : " error")
-                  }
-                >
-                  <input
-                    type="text"
-                    className={
-                      inputClasses + (validatePhoneNumber ? "" : " exception")
-                    }
-                    placeholder="Mobile Number"
-                    id="phoneNumber"
-                    onChange={(event) =>
-                      OnChange(
-                        event,
-                        setValidatePhoneNumber,
-                        phoneNumberErrText
-                      )
-                    }
-                  />
-                  <div
-                    id="phoneNumberError"
-                    className="errorMessage"
-                    style={{ display: validatePhoneNumber ? "none" : "" }}
-                  ></div>
-                </div>
-
-                {/* City */}
-                <div className={"form-item" + (validateCity ? "" : " error")}>
-                  <Select
-                    className={
-                      "input-react-select" + (validateCity ? "" : " exception")
-                    }
-                    isMulti={false}
-                    options={cities}
-                    onChange={(newValue) =>
-                      OnChangeSelect(
-                        newValue,
-                        setCityValue,
-                        setValidateCity,
-                        cityErrText
-                      )
-                    }
-                    placeholder="Select city"
-                    isLoading={cities === undefined ? true : false}
-                    isClearable={true}
-                    isSearchable={true}
-                  />
-                  <div
-                    id="cityError"
-                    className="errorMessage"
-                    style={{ display: validateCity ? "none" : "" }}
-                  ></div>
-                </div>
+                <InputValidation
+                  inputValue={name}
+                  setInputValue={setName}
+                  validateValue={validateName}
+                  setValidateValue={setValidateName}
+                  placeholder={"Name"}
+                  errorValue={nameErrValue}
+                  errorText={nameErrText}
+                />
+                <InputValidation
+                  inputValue={surname}
+                  setInputValue={setSurname}
+                  validateValue={validateSurname}
+                  setValidateValue={setValidateSurname}
+                  placeholder={"Surname"}
+                  errorValue={surnameErrValue}
+                  errorText={surnameErrText}
+                />
+                <InputValidation
+                  inputValue={middleName}
+                  setInputValue={setMiddleName}
+                  validateValue={validateMiddleName}
+                  setValidateValue={setValidateMiddleName}
+                  placeholder={"middleName"}
+                  errorValue={middleNameErrValue}
+                  errorText={middleNameErrText}
+                />
+                <InputValidation
+                  inputValue={email}
+                  setInputValue={setEmail}
+                  validateValue={validateEmail}
+                  setValidateValue={setValidateEmail}
+                  placeholder={"Email"}
+                  errorValue={emailErrValue}
+                  errorText={emailErrText}
+                  type={"email"}
+                />
+                <InputValidation
+                  inputValue={password}
+                  setInputValue={setPassword}
+                  validateValue={validatePassword}
+                  setValidateValue={setValidatePassword}
+                  placeholder={"Password"}
+                  errorValue={passwordErrValue}
+                  errorText={passwordErrText}
+                  type={"password"}
+                />
+                <InputValidation
+                  inputValue={confirmPassword}
+                  setInputValue={setConfirmPassword}
+                  validateValue={validateConfirmPassword}
+                  setValidateValue={setValidateConfirmPassword}
+                  placeholder={"Confirm password"}
+                  errorValue={null}
+                  errorText={confirmPasswordErrText}
+                  type={"password"}
+                />
+                <InputValidation
+                  inputValue={phoneNumber}
+                  setInputValue={setPhoneNumber}
+                  validateValue={validatePhoneNumber}
+                  setValidateValue={setValidatePhoneNumber}
+                  placeholder={"Mobile Number"}
+                  errorValue={phoneNumberErrValue}
+                  errorText={phoneNumberErrText}
+                  type={"tel"}
+                />
 
                 {/* File */}
-                <label className="grey-label">Profile photo:</label>
+                {/* <label className="grey-label">Profile photo:</label>
                 <input
                   className="form-control reg-file-input"
                   type={"file"}
                   accept={"image/*"}
                   id="file"
-                />
+                /> */}
 
-                <div className="user-option text-center">
+                <div className={`${s["user-option"]} text-center`}>
                   <div
-                    className={
-                      "checkbox-label" +
-                      (validateAgreement ? "" : " border border-danger")
-                    }
+                    className={`
+                      ${s["checkbox-label"]} ${
+                      validateAgreement ? "" : " border border-danger"
+                    }`}
                   >
-                    <label id="checkLabel" className="" htmlFor="agreement">
-                      <input
-                        id="agreement"
-                        type="checkbox"
-                        name="signing"
-                        className="mx-1"
-                        onClick={ClickCheckbox}
-                      />
+                    <CheckBox
+                      checked={agreement}
+                      setChecked={setAgreement}
+                      onChange={() => setValidateAgreement(true)}
+                    >
                       By signing up for an account you agree to our Terms and
                       Conditions
-                    </label>
+                    </CheckBox>
                   </div>
-                  <div
-                    id="agreementError"
-                    className="errorMessage"
-                    style={{ display: validateAgreement ? "none" : "" }}
-                  ></div>
-                  {/* <ButtonLoading
+                  <ErrorMessage show={validateAgreement}>
+                    {agreementErrText}
+                  </ErrorMessage>
+                  <ButtonLoad
                     submitted={btnSubmitted}
-                    text={"Registration"}
-                  /> */}
-                  <div
-                    id="responseError"
-                    className="errorMessage"
-                    style={{ display: validateResponse ? "none" : "" }}
-                  ></div>
+                    disabled={
+                      !validateName ||
+                      !validateSurname ||
+                      !validateEmail ||
+                      !validatePassword ||
+                      !validateConfirmPassword ||
+                      !validatePhoneNumber
+                    }
+                  >
+                    Register
+                  </ButtonLoad>
+                  <ErrorMessage show={validateResponse}>
+                    {responseErrText}
+                  </ErrorMessage>
                 </div>
               </form>
+              <Modal
+                scroll
+                width="600px"
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                {...bindings}
+              >
+                <Modal.Header>
+                  <Text id="modal-title" size={18}>
+                    Registration completed successfully!
+                  </Text>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text id="modal-description">
+                    To complete your registration, please verify your email
+                    address. An email has been sent to you with a confirmation
+                    link.
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button auto onPress={() => setVisible(false)}>
+                    Agree
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </div>
           </div>
         </div>

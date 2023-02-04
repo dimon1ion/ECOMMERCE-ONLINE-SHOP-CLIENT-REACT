@@ -1,0 +1,14 @@
+.nav-link {
+    color: #0a0a0a;
+
+    &:hover,
+    &:focus {
+      color: var(--default-color);
+    }
+  }
+  .show > .nav-link {
+    color: var(--default-color);
+  }
+  .nav-link.active {
+    color: var(--default-color);
+  }

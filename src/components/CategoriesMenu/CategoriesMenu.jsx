@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import CategoriesContext from "../../contexts/Categories.context";
+import { Category } from "../../classes/Category";
 // import ReactDOMServer from "react-dom/server";
 import s from "./CategoriesMenu.module.scss";
 
-export default function CategoriesMenu({ propCat }) {
+export default function CategoriesMenu() {
+
+  const emptyValue = "00000000-0000-0000-0000-000000000000";
+  const { allCategories } = useContext(CategoriesContext);
   const [categoriesView, setCategoriesView] = useState(undefined);
   const [selectedCategories, setSelectedCategories] = useState(undefined);
   const [hasParent, setHasParent] = useState(false);
@@ -41,9 +46,10 @@ export default function CategoriesMenu({ propCat }) {
   // }
 
   useEffect(() => {
-    if (propCat !== undefined) {
-        console.log("propCat work! --CategoriesMenu");
-        setSelectedCategories(propCat);
+    if (allCategories !== undefined) {
+        const result = GenerateCategoriesView(allCategories);
+        setCategoriesView(result);
+        setSelectedCategories(result);
     }
     // console.log("Use");
     // console.log(selectedCategories);
@@ -56,7 +62,7 @@ export default function CategoriesMenu({ propCat }) {
     //         console.log(categoriesView);
     //     }
     // }
-  }, [propCat]);
+  }, [allCategories]);
 
   function openCategorie(category) {
     if (category.children?.length > 0) {
@@ -73,11 +79,44 @@ export default function CategoriesMenu({ propCat }) {
                 setSelectedCategories(parentChildren);
             }
             else{
-                setSelectedCategories(propCat);
+                setSelectedCategories(categoriesView);
                 setHasParent(false);
             }
         }
     }
+  }
+
+  function GenerateCategoriesView(categories) {
+    return GetAllCategories(emptyValue, [...categories.mainCategories], [...categories.subCategories]);
+  }
+  
+  function GetAllCategories(parentId, mainCategories, subCategories) {
+    let result = [];
+    let category;
+    for(let i = 0; i < mainCategories.length;){
+      
+      if (mainCategories[i].parentId == parentId) {
+            category = new Category(mainCategories[i].id, mainCategories[i].name);
+            mainCategories.splice(i, 1);
+            category.addChildren(GetAllCategories(category.id, mainCategories, subCategories));
+            result.push(category);
+            i=0;
+            continue;
+        }
+  
+        i++;
+    }
+    for(let i = 0; i < subCategories.length; ){
+        if (subCategories[i].parentId == parentId) {
+            category = new Category(subCategories[i].id, subCategories[i].name, subCategories[i].thumbnail);
+            subCategories.splice(i, 1);
+            result.push(category);
+            continue;
+        }
+        
+        i++;
+    }
+    return result;
   }
 
   return (
@@ -90,7 +129,7 @@ export default function CategoriesMenu({ propCat }) {
             <div>
           <li key={"comp-parent"} className="d-flex justify-content-between">
             <button
-              className={`${s[btn]} ${s["btn-green"]}`}
+              className={`btn ${s["btn"]} ${s["btn-green"]}`}
               onClick={back}
             >
               <span className="">Back</span>
@@ -107,7 +146,7 @@ export default function CategoriesMenu({ propCat }) {
               <li key={category.id} className="d-flex justify-content-between">
                 <NavLink
                   replace={false}
-                  to={`?category=${category.name}`}
+                  to={`?category=${category.id}`}
                   className={`${s["navlink"]} d-flex`}
                   >
                     {category.children?.length <= 0 ? (
@@ -136,10 +175,11 @@ export default function CategoriesMenu({ propCat }) {
             );
           })
         ) : (
-          <div className={`${s[spinner-border]} ${s[custom-color]}`} role="status">
+          <div className={`${s["spinner-border"]} ${s["custom-color"]}`} role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
         )}
+        {/* {selectedCategories.length === 0 && <div className="text-center">Empty</div>} */}
       </ul>
     </div>
   );

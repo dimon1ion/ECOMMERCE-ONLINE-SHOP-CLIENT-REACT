@@ -1,6 +1,6 @@
 import s from "./ButtonLoad.module.scss";
 
-export default function ButtonLoad({ children, submitted }) {
+export default function ButtonLoad({ children, submitted, disabled = false }) {
   return (
     <>
       <button
@@ -8,7 +8,7 @@ export default function ButtonLoad({ children, submitted }) {
         className={`btn ${
           submitted ? s["btn-loading-blue"] : s["btn-green"]
         } text-center`}
-        disabled={submitted}
+        disabled={ submitted || disabled }
       >
         {submitted ? (
           <>

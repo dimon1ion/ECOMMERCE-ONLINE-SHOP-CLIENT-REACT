@@ -17,7 +17,7 @@
       //     height: auto;
       // }
       &:hover {
-        color: $default-color;
+        color: var(--default-color);
       }
       .category-name {
         font-size: 14px;
@@ -29,7 +29,7 @@
   }
   .custom-color {
     opacity: 1;
-    color: $default-color;
+    color: var(--default-color);
   }
     .btn-arrow:hover{
       .arrow-right{
@@ -49,7 +49,7 @@
   .btn.btn-green {
     color: #fff;
     padding: 5px 10px;
-    background-color: $default-color;
+    background-color: var(--default-color);
     transition: 0.4s;
     &:hover {
       background-color: #007bff;

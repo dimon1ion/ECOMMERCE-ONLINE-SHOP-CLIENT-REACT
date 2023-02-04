@@ -1,3 +1,6 @@
 .active {
     color: var(--default-color);
 }
+.unselect{
+    user-select: none;
+}

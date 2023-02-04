@@ -4,9 +4,9 @@ import s from "./InputValidation.module.scss";
 export default function InputValidation({
   inputValue,
   setInputValue,
-  validateValue,
-  setValidateValue,
-  errorValue,
+  validateValue = true,
+  setValidateValue = undefined,
+  errorValue = undefined,
   errorText,
   placeholder,
   type = "text"
@@ -14,10 +14,12 @@ export default function InputValidation({
 
   const handleChange = ({ target: { value } }) => {
     setInputValue(value);
-    if (value !== errorValue) {
-      setValidateValue(true);
-    } else {
-      setValidateValue(false);
+    if (setValidateValue !== undefined && errorValue !== undefined) {
+      if (value !== errorValue) {
+        setValidateValue(true);
+      } else {
+        setValidateValue(false);
+      }
     }
   };
 
