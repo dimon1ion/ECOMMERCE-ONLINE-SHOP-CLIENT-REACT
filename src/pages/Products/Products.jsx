@@ -237,7 +237,7 @@ export default function Products(prop) {
     <div>
       <section className={`${backImage["back-image"]} ${s["categories"]}`}>
         <div className="container">
-          <Navigation navigationArr={navigationArr} defaultTitle={"Product"} />
+          <Navigation navigationArr={navigationArr} title={"Product"} />
           {/* <nav className={s["navigation"]}>
             <ul>
               <li>
