@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import s from "./Navigation.module.scss";
 
-export default function Navigation({ navigationArr, defaultTitle }) {
+export default function Navigation({ navigationArr = [], defaultTitle = "" }) {
 
   return (
     <>

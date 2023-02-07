@@ -10,6 +10,7 @@ import useAuthentication from "./hooks/useAuthentication";
 import Products from "./pages/Products";
 import useCategories from "./hooks/useCategories";
 import CategoriesContext from "./contexts/Categories.context";
+import FaqPage from "./pages/FaqPage";
 // import Profile from './Pages/Profile/profile';
 // import Categories from './Pages/Categories/categories';
 
@@ -63,6 +64,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="registration" element={<Registration />} />
             <Route path="products" element={<Products />} />
+            <Route path="faq" element={<FaqPage />} />
             <Route path="" element={<Login />} />
             {/* <Route path="categories/*" element={<Categories/>}/> */}
             {/* <Route path=":name" element={<Profile/>}/> */}
