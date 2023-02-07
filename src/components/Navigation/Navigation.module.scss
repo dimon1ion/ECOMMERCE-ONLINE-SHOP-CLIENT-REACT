@@ -1,0 +1,28 @@
+.navigation {
+  color: #fff;
+  ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      &:nth-child(1)::before {
+        content: "" !important;
+        margin: 0 !important;
+      }
+      &::before {
+        content: ">>";
+        margin: 0 5px;
+      }
+      a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 300;
+      }
+    }
+  }
+}
+.name-categorie {
+  font-size: 32px;
+  font-weight: 700;
+}

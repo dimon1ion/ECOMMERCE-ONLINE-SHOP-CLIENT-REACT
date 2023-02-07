@@ -21,6 +21,7 @@ import ViewProduct from "../../components/ViewProduct/ViewProduct";
 import CategoriesMenu from "../../components/CategoriesMenu";
 import { Dropdown, Pagination } from "@nextui-org/react";
 import ServerPath from "../../enums/ServerPath";
+import Navigation from "../../components/Navigation/Navigation";
 
 function valuetext(value) {
   return `${value}$`;
@@ -30,6 +31,7 @@ export default function Products(prop) {
   const [selectedCategory, setSelectedCategory] = useState("Products");
   const [selectedKey, setSelectedKey] = useState(new Set([]));
   const [sortingValues, setSortingValues] = useState([]);
+  const [navigationArr, setNavigationArr] = useState([]);
 
   const [searchTitle, setSearchTitle] = useState("");
   const [queryCategoryId, setQueryCategoryId] = useState(null);
@@ -58,14 +60,18 @@ export default function Products(prop) {
 
   useEffect(() => {
     getSortingValues();
+    
   }, []);
 
   useEffect(() => {
+    const navArr = [{name: "Home", ref: "/home"}];
     const qCategory = query.get("category");
     setQueryCategoryId(qCategory);
     if (qCategory) {
+      navArr.push({name: qCategory});
       sendRquest();
     }
+    setNavigationArr(navArr);
   }, [query]);
 
   // console.log(sendRequestByUseEffect, page);
@@ -231,7 +237,8 @@ export default function Products(prop) {
     <div>
       <section className={`${backImage["back-image"]} ${s["categories"]}`}>
         <div className="container">
-          <nav className={s["navigation"]}>
+          <Navigation navigationArr={navigationArr} defaultTitle={"Product"} />
+          {/* <nav className={s["navigation"]}>
             <ul>
               <li>
                 <NavLink to={"/home"}>Home</NavLink>
@@ -241,7 +248,7 @@ export default function Products(prop) {
             <h2 className={`${s["name-categorie"]} headerCategory`}>
               Category{" "}
             </h2>
-          </nav>
+          </nav> */}
           <div className="row">
             <div className="d-flex justify-content-center">
               <div className={`${s["banner"]} w-100 mb-3`}>
