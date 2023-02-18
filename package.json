@@ -23,6 +23,7 @@
     "react-scripts": "^5.0.1",
     "react-select": "^5.4.0",
     "react-toastify": "^9.1.1",
+    "reactstrap": "^9.1.5",
     "sass": "^1.54.5",
     "web-vitals": "^2.1.4"
   },
