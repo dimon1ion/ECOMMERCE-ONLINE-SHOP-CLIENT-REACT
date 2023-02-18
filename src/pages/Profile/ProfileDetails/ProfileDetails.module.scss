@@ -1,0 +1,60 @@
+.white-block {
+  background: #fff;
+  border-radius: 5px;
+}
+
+.main_block {
+  gap: 20px;
+}
+
+.profile_details {
+  padding: 30px 20px 10px;
+}
+.profile_details__title {
+  font-size: 32px;
+  font-weight: 300;
+  color: #000;
+  text-transform: capitalize;
+}
+.form__input_block {
+  margin-top: 50px;
+}
+.form__button_block{
+  margin-top: 26px;
+}
+.profile_details__form {
+  .form__input {
+  }
+}
+
+.profile_addresses {
+  padding: 30px 20px 10px;
+  margin-top: 20px;
+}
+
+.details__address__title {
+  font-size: 26px;
+  font-weight: 400;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+
+.details__addresses {
+  margin-bottom: 20px;
+}
+
+.banner {
+  margin-bottom: 25px;
+  padding: 20px 35px 35px;
+  height: fit-content;
+}
+
+@media screen and (max-width: 992px) {
+  .profile_details__title {
+    font-size: 24px !important;
+  }
+  .details__address__title {
+    font-size: 18px !important;
+  }
+}

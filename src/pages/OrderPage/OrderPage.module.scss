@@ -1,0 +1,44 @@
+.white-block {
+    background: #fff;
+    border-radius: 5px;
+  }
+  
+  .main_block {
+    gap: 20px;
+  }
+
+  .profile_details {
+    padding: 30px 20px 10px;
+  }
+  .profile_details__title {
+    font-size: 32px;
+    font-weight: 300;
+    color: #000;
+    text-transform: capitalize;
+  }
+  .form__input_block {
+    margin-top: 50px;
+  }
+  .form__button_block{
+    margin-top: 26px;
+  }
+
+  .summary_block{
+    height: fit-content;
+  }
+
+  .total__money{
+    font-size: 24px;
+  }
+
+  .select123{
+    z-index: 999;
+  }
+.total{
+    padding: 30px 20px 10px;
+}
+  .order_button{
+    width: 100%;
+    font-size: 18px;
+    font-weight: 500;
+  }

@@ -12,7 +12,7 @@ export default function Footer(props) {
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   return (
-    <footer>
+    <footer className={["main_footer"]}>
       <div className={s["white-block"]}>
         <div className="container">
           <div className="row">

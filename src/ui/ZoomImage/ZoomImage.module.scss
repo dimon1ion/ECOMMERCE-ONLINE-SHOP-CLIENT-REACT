@@ -1,0 +1,39 @@
+.zoom_block{
+    top: 0;
+    left: 0;
+    display: block;
+    position: fixed;
+    z-index: 9999;
+    height: 100%;
+    width: 100%;
+    background-color: rgba($color: #000000, $alpha: .4);
+    >img{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 80%;
+      border-radius: 5px;
+      margin: 0 !important;
+      z-index: 1000;
+      animation: show .5s normal;
+    }
+  }
+.block{
+    cursor: pointer;
+    transition: all .5s;
+}
+
+@keyframes show {
+    0%    { opacity: 0; }
+    10%   { opacity: 0.1; }
+    20%   { opacity: 0.2; }
+    30%   { opacity: 0.3; }
+    40%   { opacity: 0.4; }
+    50%   { opacity: 0.5; }
+    60%   { opacity: 0.6; }
+    70%   { opacity: 0.7; }
+    80%   { opacity: 0.8; }
+    90%   { opacity: 0.9; }
+    100%  { opacity: 1; }
+  }

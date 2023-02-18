@@ -18,8 +18,15 @@ export default function ProfileMenu() {
 
   const avatarAction = (actionKey) => {
     switch (actionKey) {
+      case "cart":
+        navigate("/profile/cart");
+        break;
+        case "history":
+        navigate("/profile/history");
+        break;
       case "logout":
         logOut();
+        navigate("/login");
         break;
       case "changeAcc":
         navigate("/login");
@@ -29,7 +36,7 @@ export default function ProfileMenu() {
       navigate("/profile");
       break;
       case "settings":
-        navigate("/profile/settings");
+        navigate("/profile/details");
         break;
       default:
         break;
@@ -77,8 +84,11 @@ export default function ProfileMenu() {
             <Dropdown.Item key="settings">
               My Settings
             </Dropdown.Item>
-            <Dropdown.Item key="analytics" withDivider>
+            <Dropdown.Item key="cart" withDivider>
               Cart
+            </Dropdown.Item>
+            <Dropdown.Item key="history">
+              Order history
             </Dropdown.Item>
             {/* <Dropdown.Item key="system">System</Dropdown.Item> */}
             {/* <Dropdown.Item key="configurations">Configurations</Dropdown.Item> */}

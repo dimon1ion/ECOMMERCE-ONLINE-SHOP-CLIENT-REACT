@@ -1,4 +1,4 @@
-const putRequest = async (url, bodyData = null) => {
+const postRequest = async (url, bodyData = null) => {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -13,4 +13,4 @@ const putRequest = async (url, bodyData = null) => {
   }
 };
 
-export default putRequest;
+export default postRequest;

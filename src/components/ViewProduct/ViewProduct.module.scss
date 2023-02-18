@@ -1,25 +1,54 @@
-.navlink{
-    text-decoration: none;
-    margin-bottom: 10px;
+.navlink {
+  text-decoration: none;
+  // margin-bottom: 10px;
 }
-.ad-image {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  max-height: 152px;
-  @media (max-width: 992px) {
-    &.item-image {
-      max-height: inherit;
+.zoom {
+  border: 1px solid #f3f3f3;
+  border-radius: 10px;
+  &:hover {
+    box-shadow: 0 4px 14px 0 rgba($color: #000000, $alpha: 0.07);
+  }
+}
+// .ad-image {
+//   position: relative;
+//   display: flex;
+//   justify-content: center;
+//   align-items: flex-start;
+//   max-height: 152px;
+//   @media (max-width: 992px) {
+//     &.item-image {
+//       max-height: inherit;
+//     }
+//   }
+//   &.item-image {
+//     overflow: hidden;
+//   }
+//   img {
+//     width: 100%;
+//     transition: 0.5s;
+//   }
+// }
+.block_image {
+  .image {
+    width: 100%;
+    padding: 5px 0;
+    overflow: hidden;
+    max-height: 200px;
+    object-position: center;
+    object-fit: contain;
+    // @media (max-width: 992px) {
+    //   max-height: inherit;
+    // }
+    transition: all 0.5s;
+  }
+  &:hover {
+    .image {
+      transform: scale(1.01, 1.01);
     }
   }
-  &.item-image {
-    overflow: hidden;
-  }
-  img {
-    width: 100%;
-    transition: 0.5s;
-  }
+}
+.button_counter{
+  font-size: 26px;
 }
 .info {
   h5 {
@@ -40,22 +69,29 @@
   .product-name:hover {
     text-decoration: none;
   }
-  .product-categorie {
+  .product-info {
     color: #a0a0a0;
     font-size: 14px;
     font-weight: 400;
-    span {
-      display: inline-block;
-      font-size: 14px;
-      font-weight: 400;
-      color: #a0a0a0;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    span:hover {
-      color: var(--default-color);
-    }
+
+    // span {
+    //   display: inline-block;
+    //   font-size: 14px;
+    //   font-weight: 400;
+    //   color: #a0a0a0;
+    //   text-decoration: none;
+    //   transition: 0.3s;
+    // }
+    // span:hover {
+    //   color: var(--default-color);
+    // }
   }
+}
+.number-name{
+  display: block;
+  color: #0a0a0a;
+  font-size: 17px;
+  font-weight: 500;
 }
 // .verified,
 // &.verified {
@@ -81,92 +117,101 @@
 //   }
 // }
 .additionally {
-  @media (min-width: 1200px) {
-    &.w-larger {
-      display: flex !important;
-    }
-    &.w-smaller {
-      display: none !important;
-    }
-  }
-  display: flex;
+  // display: flex;
   background-color: #f6f6f6;
   border-top: 1px solid #eee;
   min-height: 35px;
   padding: 0 15px 0 25px;
-  align-items: center;
-  justify-content: space-between;
-  .left-icons {
-    span {
-      color: #9fa4a4;
-      margin: 0;
-      margin-right: 20px;
-      transition: color 0.3s;
-      font-size: 14px;
-      text-decoration: none;
-    }
-    // .tags {
-    //   display: flex;
-    // }
-    // .tags::before {
-    //   position: static;
-    //   // content: url(../images/tags-gray.svg);
-    //   content: "";
-    //   background-image: url(../images/tags-gray.svg);
-    //   margin-top: 2px;
-    //   height: 16px;
-    //   width: 16px;
-    //   margin-right: 5px;
-    //   transition: 0.3s;
-    // }
-    span:hover {
+  // align-items: center;
+  // justify-content: space-between;
+  // .left-icons {
+  .created_date {
+    color: #9fa4a4;
+    margin: 0;
+    margin-right: 20px;
+    transition: color 0.3s;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: default;
+    &:hover {
       color: var(--default-color);
     }
-    // .tags:hover::before {
-    //   // content: url(../images/tags-green.svg);
-    //   content: "";
-    //   background-image: url(../images/tags-green.svg);
-    // }
   }
-  .icons {
-    display: flex;
-    span {
-      display: block;
-      width: 20px;
-      height: 20px;
-      padding: 15px 0;
-      text-decoration: none;
-      background-repeat: no-repeat;
-      background-position: center;
-      transition: 0.3s;
-    }
-    span:hover {
-      background-color: #fff;
-    }
-    .nav-icon {
-      //   background-image: url("../images/navigation.svg");
-    }
-    .nav-icon:hover {
-      //   background-image: url("../images/navigation-green.svg");
-    }
-    .individual,
-    .dealer {
-      position: relative;
-      margin-left: 5px;
-      //   background-image: url("../images/briefcase.svg");
-    }
-    .dealer::after {
-      position: absolute;
-      content: "";
-      height: 6px;
-      width: 6px;
-      background-color: #38b590;
-      border-radius: 50%;
-      right: -3px;
-      top: 4px;
-    }
-    .individual:hover {
-      //   background-image: url("../images/briefcase-green.svg");
+  .add_to_cart_button {
+    font-weight: 500;
+    span{
+      margin: 0;
     }
   }
+  .icon-image {
+    height: 1.2em;
+  }
+  .icon-image-m{
+    height: 1.2em;
+    margin-right: 5px;
+  }
+  // .tags {
+  //   display: flex;
+  // }
+  // .tags::before {
+  //   position: static;
+  //   // content: url(../images/tags-gray.svg);
+  //   content: "";
+  //   background-image: url(../images/tags-gray.svg);
+  //   margin-top: 2px;
+  //   height: 16px;
+  //   width: 16px;
+  //   margin-right: 5px;
+  //   transition: 0.3s;
+  // }
+  // span:hover {
+  //   color: var(--default-color);
+  // }
+  // .tags:hover::before {
+  //   // content: url(../images/tags-green.svg);
+  //   content: "";
+  //   background-image: url(../images/tags-green.svg);
+  // }
+  // }
+  // .icons {
+  //   display: flex;
+  //   span {
+  //     display: block;
+  //     width: 20px;
+  //     height: 20px;
+  //     padding: 15px 0;
+  //     text-decoration: none;
+  //     background-repeat: no-repeat;
+  //     background-position: center;
+  //     transition: 0.3s;
+  //   }
+  //   span:hover {
+  //     background-color: #fff;
+  //   }
+  //   .nav-icon {
+  //     //   background-image: url("../images/navigation.svg");
+  //   }
+  //   .nav-icon:hover {
+  //     //   background-image: url("../images/navigation-green.svg");
+  //   }
+  //   .individual,
+  //   .dealer {
+  //     position: relative;
+  //     margin-left: 5px;
+  //     //   background-image: url("../images/briefcase.svg");
+  //   }
+  //   .dealer::after {
+  //     position: absolute;
+  //     content: "";
+  //     height: 6px;
+  //     width: 6px;
+  //     background-color: #38b590;
+  //     border-radius: 50%;
+  //     right: -3px;
+  //     top: 4px;
+  //   }
+  //   .individual:hover {
+  //     //   background-image: url("../images/briefcase-green.svg");
+  //   }
+  // }
 }

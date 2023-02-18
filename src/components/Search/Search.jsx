@@ -1,25 +1,41 @@
 import Select from "react-select";
 import s from "./Search.module.scss";
 import validate from "../../assets/styles/inputValid.module.scss";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CategoriesContext from "../../contexts/Categories.context";
+import { useNavigate } from "react-router-dom";
 
 
-export default function Search({searchValue, setSearchValue, setSelectedCategoryId, onSubmit}) {
+export default function Search(props) {
     
+  // {searchValue, setSearchValue, setSelectedCategoryId, onSubmit}
+
   const { allCategoriesSelectType:categoriesSelect } = useContext(CategoriesContext);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const navigate = useNavigate();
 
 
     const onChangeSelected = (newValue) => {
       setSelectedCategoryId(newValue?.value ?? null);
     }
 
+    const onSubmit = (event) => {
+      event.preventDefault();
+      const searchParams = new URLSearchParams();
+      searchParams.append("title", searchValue);
+      if (selectedCategoryId !== null) {
+        searchParams.append("categoryId", selectedCategoryId);
+      }
+      navigate("/products?" + searchParams.toString());
+    }
+
     return (
         <>
-            <form onSubmit={onSubmit} className={`input-group ${s["search"]}`}>
+            <form onSubmit={onSubmit} className={`input-group ${s["search"]} w-100 mb-3`}>
                   <Select
                     className={
-                      `col-12 col-md-6 col-lg-3 ${s["input-react-select"]}
+                      `col-12 col-md-5 col-lg-3 ${s["input-react-select"]}
                       ${(false ? "" : validate["exception"])}`
                     }
                     isMulti={false}

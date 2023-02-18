@@ -146,7 +146,7 @@ export default function CategoriesMenu() {
               <li key={category.id} className="d-flex justify-content-between">
                 <NavLink
                   replace={false}
-                  to={`?category=${category.id}`}
+                  to={`?categoryId=${category.id}`}
                   className={`${s["navlink"]} d-flex`}
                   >
                     {category.children?.length <= 0 ? (

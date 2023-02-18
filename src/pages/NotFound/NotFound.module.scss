@@ -1,0 +1,13 @@
+.error{
+    background: #fff;
+    border-radius: 5px;
+    font-size: 36px;
+    padding: 50px;
+    color: var(--default-color);
+}
+
+@media screen and (max-width: 992px) {
+    .error{
+        font-size: 24px;
+    }
+  }

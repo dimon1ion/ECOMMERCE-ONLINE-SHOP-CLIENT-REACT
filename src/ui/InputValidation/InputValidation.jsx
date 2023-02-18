@@ -31,7 +31,6 @@ export default function InputValidation({
           validateValue ? "" : s["exception"]
         }`}
         placeholder={placeholder}
-        value={inputValue}
         onChange={handleChange}
       />
       <ErrorMessage show={validateValue}>{errorText}</ErrorMessage>

@@ -7,7 +7,7 @@ import CheckBox from "../../ui/CheckBox/CheckBox";
 import ButtonLoad from "../../ui/ButtonLoad";
 import s from "./Login.module.scss";
 import backImage from "../../assets/styles/backImage.module.scss";
-import putRequest from "../../requests/putRequest";
+import postRequest from "../../requests/postRequest";
 import jwtDecode from "jwt-decode";
 import Token from "../../enums/Token";
 import ServerPath from "../../enums/ServerPath";
@@ -83,7 +83,7 @@ export default function Login(props) {
     const url = new URL(`${ServerPath.SERVERPATH}${ServerPath.LOGIN}`);
     url.searchParams.append("rememberMe", keepLogged);
     // console.log(url.toString());
-    const response = await putRequest(url.toString(), data);
+    const response = await postRequest(url.toString(), data);
 
     if (response === null) {
       setValidateResponse(false);

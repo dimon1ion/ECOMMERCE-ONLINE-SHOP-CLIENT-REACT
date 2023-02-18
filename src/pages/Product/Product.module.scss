@@ -1,0 +1,419 @@
+.white-block {
+  background: #fff;
+  border-radius: 5px;
+}
+.main_info {
+  padding: 25px 25px 51px;
+  margin-bottom: 25px;
+}
+.fade {
+  div {
+    opacity: 1 !important;
+  }
+  > div > div:not(:first-child){
+    img{
+      height: 120px;
+      object-fit: contain;
+      @media print {
+        height: 50px;
+        width: 50px;
+      }
+    }
+  }
+}
+.short_info {
+  padding-left: 10px;
+  padding-top: 10px;
+  .price {
+    color: var(--default-color);
+    font-size: 36px;
+    font-weight: 500;
+    @media print{
+      font-size: 20px;
+    }
+  }
+  .title {
+    font-size: 36px;
+    font-weight: 400;
+    color: #000;
+    margin: 11px 0 8px;
+    @media print{
+      font-size: 20px;
+    }
+  }
+  .author {
+    color: #9fa4a4;
+    font-size: 14px;
+    a {
+      padding-left: 5px;
+      transition: color 0.3s;
+      text-decoration: none;
+      font-weight: 500;
+      color: #000;
+      &:hover {
+        color: var(--default-color);
+      }
+    }
+  }
+  .category {
+    color: #9fa4a4;
+    font-size: 14px;
+    .link {
+      text-decoration: none;
+      color: #000;
+      padding-left: 5px;
+      font-weight: 500;
+      transition: color 0.3s;
+      &:hover {
+        color: var(--default-color);
+      }
+    }
+  }
+  .image {
+    height: 1.2em;
+    margin-right: 5px;
+  }
+  .add-cart {
+    font-size: 24px;
+    padding: 25px 0px;
+  }
+  .contacts {
+    margin-top: 20px;
+  }
+  .contacts__title {
+    font-size: 18px;
+  }
+  .contacts__phone__button {
+    margin-bottom: 16px;
+    font-size: 16px;
+    .contacts__phone_image {
+      display: inline-block;
+      width: 1.2em;
+      height: 1.2em;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: bottom;
+      margin-right: 5px;
+      transition: all 0.3s;
+      background-image: url("../../assets/Images/phone_white_ring_icon.svg");
+    }
+    .contacts__mail_image {
+      display: inline-block;
+      width: 1.2em;
+      height: 1.2em;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: bottom;
+      margin-right: 5px;
+      transition: all 0.3s;
+      background-image: url("../../assets/Images/mail_white_message_icon.svg");
+    }
+    &:hover {
+      .contacts__phone_image {
+        background-image: url("../../assets/Images/phone_orange_ring_icon.svg");
+      }
+      .contacts__mail_image {
+        background-image: url("../../assets/Images/mail_blue_message_icon.svg");
+      }
+    }
+  }
+}
+
+.ref {
+  text-decoration: none;
+}
+
+.my-btn {
+  // font-size: 24px;
+  padding: 6px 25px 8px;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s;
+  &.btn-green {
+    color: #fff;
+    background-color: var(--default-color);
+    &:hover {
+      background-color: #007bff;
+    }
+  }
+  &.btn-orange {
+    color: #fff;
+    background-color: #f36d2d;
+    border: 1px solid transparent;
+    &:hover {
+      color: #f36d2d;
+      border: 1px solid #f36d2d;
+      background-color: #fff;
+    }
+  }
+  &.btn-blue {
+    color: #fff;
+    background-color: #0d79bf;
+    border: 1px solid transparent;
+    &:hover {
+      color: #0d79bf;
+      border: 1px solid #0d79bf;
+      background-color: #fff;
+    }
+  }
+}
+
+.additional_info_block {
+  gap: 30px;
+  .description {
+    color: #272727;
+    line-height: 22px;
+    margin-bottom: 25px;
+    padding: 20px 35px 35px;
+    height: fit-content;
+    .description__title {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .description__text {
+      margin-bottom: 1rem;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+  }
+  .short-commands {
+    color: #272727;
+    line-height: 22px;
+    margin-bottom: 25px;
+    padding: 20px 35px 35px;
+    height: fit-content;
+    .short-commands__title {
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .short-commands__list {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 10px;
+        .list__image {
+          height: 1.2em;
+          margin-right: 5px;
+          // width: 20px;
+        }
+        .list__button {
+          span {
+            position: static;
+            transform: translateY(calc(50% - 0.6em));
+          }
+          // background-color: #2749f7;
+          // border-radius: 2px;
+        }
+        .list__button__seller {
+          > *:first-child {
+            padding-left: 5px;
+          }
+          > *:last-child {
+            padding-right: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.reviews {
+  color: #272727;
+  line-height: 22px;
+  margin-bottom: 25px;
+  padding: 20px 35px 35px;
+  .reviews__title {
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .reviews__button_add__image{
+    height: 1.2em;
+    margin-right: 5px;
+  }
+  .reviews__button_reload__image{
+    height: 1.2em;
+  }
+  .reviews__review{
+    margin-top: 15px;
+  }
+  .review__profile{
+    margin-bottom: 14px;
+  }
+  .review__profile__avatar{
+    margin-right: 10px;
+  }
+  .review__text{
+    font-size: 16px;
+    white-space: pre-line;
+    margin-bottom: 10px;
+  }
+  .review__photos__carousel{
+    position: relative;
+    // height: 100px;
+    // width: 100px;
+    max-width: 100%;
+    .arrow_block{
+      position: absolute;
+      height: 100%;
+      width: 30px;
+      border-radius: 10px;
+      background-color: rgba($color: #000000, $alpha: 0.5);
+      &:hover{
+        background-color: rgba($color: #000000, $alpha: 0.7);
+      }
+      &.left{
+        left: 0;
+      }
+      &.right{
+        right: 0;
+      }
+      
+      .arrow{
+        position: absolute;
+        height: 25px;
+        top: 50%;
+        transform: translate(-2px, -50%);
+        &.right{
+          right: 0;
+        }
+        &.left{
+          left: 0;
+        }
+      }
+    }
+  }
+  .review__photo{
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin: 0 10px !important;
+  }
+  
+}
+
+.recommend-products {
+  gap: 30px;
+  .recommend-products__list {
+    color: #272727;
+    line-height: 22px;
+    margin-bottom: 25px;
+    padding: 20px 35px 35px;
+  }
+  .recommend-products__banner {
+    margin-bottom: 25px;
+    padding: 20px 35px 35px;
+    height: fit-content;
+    .recommend-products__banner__image {
+      display: block;
+      height: 60px;
+    }
+    .recommend-products__banner__title {
+      color: #000;
+      font-weight: 500;
+      margin: 28px 0 10px;
+    }
+    .recommend-products__banner__title_help {
+      color: #000;
+      font-weight: 400;
+      margin: 28px 0 10px;
+    }
+    .recommend-products__banner__comment {
+      margin-bottom: 1.5em;
+      color: #a0a0a0;
+      line-height: 17px;
+    }
+  }
+}
+
+.post-rek {
+  .background {
+    position: relative;
+    background-image: url(../../assets/Images/end-image.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 40px 0 60px;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 114, 188, 0.92);
+    }
+    > * {
+      z-index: 1;
+      color: #fff;
+    }
+    h2 {
+      font-weight: 400;
+      font-size: 36px;
+      margin: 20px 0 14px 0;
+    }
+    h4 {
+      font-size: 20px;
+      font-weight: 300;
+      margin-bottom: 8px;
+    }
+    .btn.btn-green {
+      font-size: 18px;
+      color: #fff;
+      padding: 10px 40px 12px;
+      margin-top: 15px;
+      background-color: var(--default-color);
+      border: 1px solid var(--default-color);
+      transition: 0.4s;
+      &:hover {
+        background-color: transparent;
+      }
+    }
+    @media (max-width: 576px) {
+      h2 {
+        font-size: 28px;
+        line-height: 32px;
+      }
+      h4 {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.add_review_image_button {
+  padding: 10px;
+}
+
+@media screen and (max-width: 992px) {
+  .short_info {
+    .price {
+      font-size: 25px;
+    }
+    .title {
+      font-size: 25px;
+    }
+    .add-cart {
+      font-size: 16px;
+    }
+    .contacts__phone__button {
+      font-size: 14px;
+    }
+  }
+}
+
+@media print {
+  .no-print,
+  .short-commands,
+  .main_footer,
+  .contacts,
+  .my-btn {
+    display: none;
+  }
+  body > div > *:not(.product_page){
+    display: none;
+  }
+  .fade {
+    flex: 0 0 auto;
+    width: 58.33333333%;
+  }
+}

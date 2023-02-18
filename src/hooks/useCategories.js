@@ -60,6 +60,13 @@ export default function useCategories(props) {
     return allCategoriesSelectType;
   }
 
+  const getCategoryById = (categoryId) => {
+    if (!Array.isArray(allCategoriesSelectType)) {
+      return allCategoriesSelectType?.find((category) => category.value === categoryId);
+    }
+    return undefined;
+  }
+
 
 
   const clearCategories = () => {
@@ -68,5 +75,5 @@ export default function useCategories(props) {
     checkCategories();
   };
 
-  return { allCategories, allCategoriesSelectType, checkCategories, clearCategories };
+  return { allCategories, allCategoriesSelectType, checkCategories, clearCategories, getCategoryById };
 }

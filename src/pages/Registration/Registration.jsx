@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import InputValidation from "../../ui/InputValidation";
@@ -9,24 +9,35 @@ import s from "./Registration.module.scss";
 import backImage from "../../assets/styles/backImage.module.scss";
 import ServerPath from "../../enums/ServerPath";
 import Token from "../../enums/Token";
-import putRequest from "../../requests/putRequest";
+import postRequest from "../../requests/postRequest";
 import jwtDecode from "jwt-decode";
 import { Modal, useModal, Button, Text } from "@nextui-org/react";
 import confetti from "canvas-confetti";
+import AuthenticationContext from "../../contexts/Authentication.context";
 
 export default function Registration() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isAuthenticated } = useContext(AuthenticationContext);
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+    if (isAuthenticated) {
+      navigate("/notfound");
+    }
+  }, [isAuthenticated]);
 
   const count = 200;
   const defaults = {
-    origin: { y: 0.7 }
+    origin: { y: 0.7 },
   };
   const fire = (particleRatio, opts) => {
-    confetti(Object.assign({}, defaults, opts, {
-      particleCount: Math.floor(count * particleRatio)
-    }));
-  }
+    confetti(
+      Object.assign({}, defaults, opts, {
+        particleCount: Math.floor(count * particleRatio),
+      })
+    );
+  };
   const fireVisible = () => {
     fire(0.25, {
       spread: 26,
@@ -38,19 +49,19 @@ export default function Registration() {
     fire(0.35, {
       spread: 100,
       decay: 0.91,
-      scalar: 0.8
+      scalar: 0.8,
     });
     fire(0.1, {
       spread: 120,
       startVelocity: 25,
       decay: 0.92,
-      scalar: 1.2
+      scalar: 1.2,
     });
     fire(0.1, {
       spread: 120,
       startVelocity: 45,
     });
-  }
+  };
 
   const { setVisible, bindings } = useModal();
 
@@ -114,7 +125,7 @@ export default function Registration() {
 
   //#region /===> Functions <===/
 
-  async function SubmitRegistrationForm(event) {
+  const SubmitRegistrationForm = async (event) => {
     event.preventDefault();
     setBtnSubmitted(true);
     setValidateResponse(true);
@@ -241,7 +252,7 @@ export default function Registration() {
     if (middleName.trim().length !== 0) {
       data.middleName = middleName;
     }
-    const response = await putRequest(
+    const response = await postRequest(
       `${ServerPath.SERVERPATH}${ServerPath.REGISTRATION}`,
       data
     );
@@ -253,22 +264,6 @@ export default function Registration() {
       hasError = true;
     } else if (response.ok) {
       hasError = false;
-      // try {
-      //   const { accessToken, refreshToken } = await response.json();
-      //   const Atoken = jwtDecode(accessToken);
-      //   const expDate = new Date(+Atoken.exp * 1000);
-      //   console.log(expDate.toUTCString());
-      //   document.cookie = `${
-      //     Token.ACCESTOKEN
-      //   }=${accessToken};expires=${expDate.toUTCString()}`;
-      //   window.localStorage.setItem(Token.REFRESHTOKEN, refreshToken);
-      // } catch (error) {
-      //   setValidateResponse(false);
-      //   setResponseErrText(
-      //     "Prevention is currently underway. Try again in a few minutes"
-      //   );
-      //   hasError = true;
-      // }
     } else if (response.status === 400) {
       hasError = true;
       const errors = await response.json();
@@ -325,88 +320,90 @@ export default function Registration() {
       fireVisible();
     }
     setBtnSubmitted(false);
-  }
+  };
 
   //#endregion
 
   return (
-    <div className={backImage["back-image"]}>
-      <div className={`container ${s["max-w-600"]}`}>
-        <div className="row">
-          <div className={s["white-block"]}>
-            <div className={s["user-account"]}>
-              <h2 className="text-center">Create a Trade Account</h2>
-              <form onSubmit={SubmitRegistrationForm}>
-                <InputValidation
-                  inputValue={name}
-                  setInputValue={setName}
-                  validateValue={validateName}
-                  setValidateValue={setValidateName}
-                  placeholder={"Name"}
-                  errorValue={nameErrValue}
-                  errorText={nameErrText}
-                />
-                <InputValidation
-                  inputValue={surname}
-                  setInputValue={setSurname}
-                  validateValue={validateSurname}
-                  setValidateValue={setValidateSurname}
-                  placeholder={"Surname"}
-                  errorValue={surnameErrValue}
-                  errorText={surnameErrText}
-                />
-                <InputValidation
-                  inputValue={middleName}
-                  setInputValue={setMiddleName}
-                  validateValue={validateMiddleName}
-                  setValidateValue={setValidateMiddleName}
-                  placeholder={"middleName"}
-                  errorValue={middleNameErrValue}
-                  errorText={middleNameErrText}
-                />
-                <InputValidation
-                  inputValue={email}
-                  setInputValue={setEmail}
-                  validateValue={validateEmail}
-                  setValidateValue={setValidateEmail}
-                  placeholder={"Email"}
-                  errorValue={emailErrValue}
-                  errorText={emailErrText}
-                  type={"email"}
-                />
-                <InputValidation
-                  inputValue={password}
-                  setInputValue={setPassword}
-                  validateValue={validatePassword}
-                  setValidateValue={setValidatePassword}
-                  placeholder={"Password"}
-                  errorValue={passwordErrValue}
-                  errorText={passwordErrText}
-                  type={"password"}
-                />
-                <InputValidation
-                  inputValue={confirmPassword}
-                  setInputValue={setConfirmPassword}
-                  validateValue={validateConfirmPassword}
-                  setValidateValue={setValidateConfirmPassword}
-                  placeholder={"Confirm password"}
-                  errorValue={null}
-                  errorText={confirmPasswordErrText}
-                  type={"password"}
-                />
-                <InputValidation
-                  inputValue={phoneNumber}
-                  setInputValue={setPhoneNumber}
-                  validateValue={validatePhoneNumber}
-                  setValidateValue={setValidatePhoneNumber}
-                  placeholder={"Mobile Number"}
-                  errorValue={phoneNumberErrValue}
-                  errorText={phoneNumberErrText}
-                  type={"tel"}
-                />
+    <>
+      {isAuthenticated !== undefined && (
+        <div className={backImage["back-image"]}>
+          <div className={`container ${s["max-w-600"]}`}>
+            <div className="row">
+              <div className={s["white-block"]}>
+                <div className={s["user-account"]}>
+                  <h2 className="text-center">Create a Trade Account</h2>
+                  <form onSubmit={SubmitRegistrationForm}>
+                    <InputValidation
+                      inputValue={name}
+                      setInputValue={setName}
+                      validateValue={validateName}
+                      setValidateValue={setValidateName}
+                      placeholder={"Name"}
+                      errorValue={nameErrValue}
+                      errorText={nameErrText}
+                    />
+                    <InputValidation
+                      inputValue={surname}
+                      setInputValue={setSurname}
+                      validateValue={validateSurname}
+                      setValidateValue={setValidateSurname}
+                      placeholder={"Surname"}
+                      errorValue={surnameErrValue}
+                      errorText={surnameErrText}
+                    />
+                    <InputValidation
+                      inputValue={middleName}
+                      setInputValue={setMiddleName}
+                      validateValue={validateMiddleName}
+                      setValidateValue={setValidateMiddleName}
+                      placeholder={"middleName"}
+                      errorValue={middleNameErrValue}
+                      errorText={middleNameErrText}
+                    />
+                    <InputValidation
+                      inputValue={email}
+                      setInputValue={setEmail}
+                      validateValue={validateEmail}
+                      setValidateValue={setValidateEmail}
+                      placeholder={"Email"}
+                      errorValue={emailErrValue}
+                      errorText={emailErrText}
+                      type={"email"}
+                    />
+                    <InputValidation
+                      inputValue={password}
+                      setInputValue={setPassword}
+                      validateValue={validatePassword}
+                      setValidateValue={setValidatePassword}
+                      placeholder={"Password"}
+                      errorValue={passwordErrValue}
+                      errorText={passwordErrText}
+                      type={"password"}
+                    />
+                    <InputValidation
+                      inputValue={confirmPassword}
+                      setInputValue={setConfirmPassword}
+                      validateValue={validateConfirmPassword}
+                      setValidateValue={setValidateConfirmPassword}
+                      placeholder={"Confirm password"}
+                      errorValue={null}
+                      errorText={confirmPasswordErrText}
+                      type={"password"}
+                    />
+                    <InputValidation
+                      inputValue={phoneNumber}
+                      setInputValue={setPhoneNumber}
+                      validateValue={validatePhoneNumber}
+                      setValidateValue={setValidatePhoneNumber}
+                      placeholder={"Mobile Number"}
+                      errorValue={phoneNumberErrValue}
+                      errorText={phoneNumberErrText}
+                      type={"tel"}
+                    />
 
-                {/* File */}
-                {/* <label className="grey-label">Profile photo:</label>
+                    {/* File */}
+                    {/* <label className="grey-label">Profile photo:</label>
                 <input
                   className="form-control reg-file-input"
                   type={"file"}
@@ -414,72 +411,74 @@ export default function Registration() {
                   id="file"
                 /> */}
 
-                <div className={`${s["user-option"]} text-center`}>
-                  <div
-                    className={`
+                    <div className={`${s["user-option"]} text-center`}>
+                      <div
+                        className={`
                       ${s["checkbox-label"]} ${
-                      validateAgreement ? "" : " border border-danger"
-                    }`}
+                          validateAgreement ? "" : " border border-danger"
+                        }`}
+                      >
+                        <CheckBox
+                          checked={agreement}
+                          setChecked={setAgreement}
+                          onChange={() => setValidateAgreement(true)}
+                        >
+                          By signing up for an account you agree to our Terms
+                          and Conditions
+                        </CheckBox>
+                      </div>
+                      <ErrorMessage show={validateAgreement}>
+                        {agreementErrText}
+                      </ErrorMessage>
+                      <ButtonLoad
+                        submitted={btnSubmitted}
+                        disabled={
+                          !validateName ||
+                          !validateSurname ||
+                          !validateEmail ||
+                          !validatePassword ||
+                          !validateConfirmPassword ||
+                          !validatePhoneNumber
+                        }
+                      >
+                        Register
+                      </ButtonLoad>
+                      <ErrorMessage show={validateResponse}>
+                        {responseErrText}
+                      </ErrorMessage>
+                    </div>
+                  </form>
+                  <Modal
+                    scroll
+                    width="600px"
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                    {...bindings}
                   >
-                    <CheckBox
-                      checked={agreement}
-                      setChecked={setAgreement}
-                      onChange={() => setValidateAgreement(true)}
-                    >
-                      By signing up for an account you agree to our Terms and
-                      Conditions
-                    </CheckBox>
-                  </div>
-                  <ErrorMessage show={validateAgreement}>
-                    {agreementErrText}
-                  </ErrorMessage>
-                  <ButtonLoad
-                    submitted={btnSubmitted}
-                    disabled={
-                      !validateName ||
-                      !validateSurname ||
-                      !validateEmail ||
-                      !validatePassword ||
-                      !validateConfirmPassword ||
-                      !validatePhoneNumber
-                    }
-                  >
-                    Register
-                  </ButtonLoad>
-                  <ErrorMessage show={validateResponse}>
-                    {responseErrText}
-                  </ErrorMessage>
+                    <Modal.Header>
+                      <Text id="modal-title" size={18}>
+                        Registration completed successfully!
+                      </Text>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Text id="modal-description">
+                        To complete your registration, please verify your email
+                        address. An email has been sent to you with a
+                        confirmation link.
+                      </Text>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button auto onPress={() => setVisible(false)}>
+                        Agree
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
                 </div>
-              </form>
-              <Modal
-                scroll
-                width="600px"
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-                {...bindings}
-              >
-                <Modal.Header>
-                  <Text id="modal-title" size={18}>
-                    Registration completed successfully!
-                  </Text>
-                </Modal.Header>
-                <Modal.Body>
-                  <Text id="modal-description">
-                    To complete your registration, please verify your email
-                    address. An email has been sent to you with a confirmation
-                    link.
-                  </Text>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button auto onPress={() => setVisible(false)}>
-                    Agree
-                  </Button>
-                </Modal.Footer>
-              </Modal>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

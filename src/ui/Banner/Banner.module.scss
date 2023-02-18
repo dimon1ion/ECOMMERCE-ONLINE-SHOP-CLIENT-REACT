@@ -1,0 +1,24 @@
+.banner {
+  margin-bottom: 25px;
+  padding: 20px 35px 35px;
+  height: fit-content;
+}
+  .banner__image {
+    display: block;
+    height: 60px;
+  }
+  .banner__title {
+    color: #000;
+    font-weight: 500;
+    margin: 28px 0 10px;
+  }
+  .banner__title_help {
+    color: #000;
+    font-weight: 400;
+    margin: 28px 0 10px;
+  }
+  .banner__comment {
+    margin-bottom: 1.5em;
+    color: #a0a0a0;
+    line-height: 17px;
+  }
