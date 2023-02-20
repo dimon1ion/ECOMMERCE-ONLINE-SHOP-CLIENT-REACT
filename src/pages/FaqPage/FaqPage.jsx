@@ -19,15 +19,19 @@ export default function FaqPage(props) {
   const faqData =[
     {
       question: "How do I track my order?",
-      answer: "You can track your order by visiting the 'Order History' section of your account. If you do not have an account, you can track your order using the tracking number provided in your shipping confirmation email."
-    },
-    {
-      question: "What is your return policy?",
-      answer: "Our return policy allows you to return an item within 30 days of receiving it. To be eligible for a return, the item must be in its original condition and packaging. For more information, please visit our Returns page."
+      answer: "You can track your order by visiting the 'Order History' section of your account. You can cancel your order by contacting our customer service team at nail.shamsudinov@gmail.com or sams_bd16@itstep.edu.az"
     },
     {
       question: "How do I make a purchase?",
       answer: "To make a purchase, add the desired item to your cart, and then proceed to checkout. Fill in the required information and complete the payment."
+    },
+    {
+      question: "How do I change my contact information?",
+      answer: "You can change your contact information by visiting the 'My Account' section of your account. Phone and mail change require email confirmation."
+    },
+    {
+      question: "I forgot my password. What should I do?",
+      answer: "You can reset your password by visiting the 'Forgot Password' section of your account. You will receive an email with a link to reset your password."
     }
   ]
 

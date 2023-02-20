@@ -400,7 +400,7 @@ export default function Product(props) {
                       className={`${s["list__button"]} ${s["list__button__seller"]}`}
                       onClick={() => {
                         navigate(
-                          `/products?sellerId=${productInfo.seller?.authId}`
+                          `/products?sellerId=${productInfo.seller?.id}`
                         );
                         window.scrollTo(0, 0);
                       }}

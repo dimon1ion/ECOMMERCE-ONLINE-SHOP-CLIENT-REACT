@@ -10,6 +10,7 @@ import backImage from "../../assets/styles/backImage.module.scss";
 import postRequest from "../../requests/postRequest";
 import jwtDecode from "jwt-decode";
 import Token from "../../enums/Token";
+import request from "../../requests/request";
 import ServerPath from "../../enums/ServerPath";
 import AuthenticationContext from "../../contexts/Authentication.context";
 
@@ -43,6 +44,19 @@ export default function Login(props) {
   const [btnSubmitted, setBtnSubmitted] = useState(false);
 
   //#region /===> Functions <===/
+
+  async function OnResetPassword(event){
+    event.preventDefault();
+    const url = new URL(`${ServerPath.SERVERPATH}${ServerPath.RESETPASSWORD}`);
+    url.searchParams.append("email", userName);
+    const response = await request(
+      "POST",
+      url.toString(),
+      null,
+      null,
+      null
+    );
+  }
 
   async function OnSubmitForm(event) {
     event.preventDefault();
@@ -178,7 +192,6 @@ export default function Login(props) {
                   {responseErrText}
                 </ErrorMessage>
               </form>
-
               <div
                 className={`${s["user-option"]} d-flex flex-column flex-sm-row justify-content-sm-between`}
               >
@@ -187,14 +200,15 @@ export default function Login(props) {
                     Keep me logged in
                   </CheckBox>
                 </div>
+                <form onSubmit={OnResetPassword}>
                 <div className="mt-2 col text-start text-sm-end">
-                  <NavLink
+                  <ButtonLoad
                     className={`${s["nav-a"]} ${s["unselect"]}`}
-                    to={"/soon"}
                   >
                     Forgot password
-                  </NavLink>
+                  </ButtonLoad>
                 </div>
+                </form>
               </div>
             </div>
           </div>

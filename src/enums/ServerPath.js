@@ -27,4 +27,5 @@ export default class ServerPath{
     static get ADDORDER() { return "/api/Order/addFromCart"; };
     static get GETORDERS() { return "/api/Order/getOwn"; };
     static get GETOORDERSTATUSES() { return "/api/Order/states"; };
+    static get RESETPASSWORD() { return "/api/Auth/forgotpassword"; };
 }

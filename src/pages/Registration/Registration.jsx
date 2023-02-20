@@ -17,7 +17,7 @@ import AuthenticationContext from "../../contexts/Authentication.context";
 
 export default function Registration() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
