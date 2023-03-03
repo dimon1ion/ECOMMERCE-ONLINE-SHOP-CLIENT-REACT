@@ -49,7 +49,7 @@ export default function FaqPage(props) {
               <Button
                 color="light"
                 id={`toggler${index + 1}`}
-                style={{ marginBottom: "1rem", marginTop: "2rem"  }}
+                className={`w-100 ${s["question_button"]}`}
               >
                 {faq.question}
               </Button>

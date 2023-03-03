@@ -20,23 +20,20 @@
       font-size: 16px;
     }
     .user-option {
-      margin-top: 55px;
+      margin-top: 20px;
       color: #b9b9b9;
       .checkbox-label {
         :hover {
           color: var(--default-color);
         }
       }
-      .nav-a {
-        text-decoration: none;
+      .forgot_password_button{
         color: #858585;
         transition: 0.3s;
-      }
-      .nav-a:hover {
-        color: var(--default-color);
-      }
-      .active {
-        color: var(--default-color);
+        font-size: 16px;
+        &:hover{
+          color: var(--default-color);
+        }
       }
       @media (max-width: 768px) {
         .checkbox-label {
@@ -57,6 +54,11 @@
   border-radius: 4px;
   margin-top: 25px;
   background-color: #0072bc;
+  &:hover{
+    color: #fff;
+    background-color: var(--default-color);
+    border-color: #fff;
+  }
 }
 .unselect{
   user-select: none;

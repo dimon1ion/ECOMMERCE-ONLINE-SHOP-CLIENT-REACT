@@ -156,6 +156,8 @@ export default function Products(prop) {
     const searchParams = new URLSearchParams();
     searchParams.append("page", currentPage);
     searchParams.append("onPage", offset);
+    searchParams.append("title", queryTitle || "");
+    console.log(currentPage, offset);
     const sortingKey = getSortingKey();
     if (sortingKey !== undefined) {
       searchParams.append("sorting", sortingKey);
@@ -175,7 +177,6 @@ export default function Products(prop) {
           ServerPath.GETPRODUCTSBYCATEGORIEID +
           `/${queryCategoryId}`
       );
-      searchParams.append("title", queryTitle ?? "");
       response = await getRequest(
         url.toString() + "?" + searchParams.toString()
       );
@@ -191,7 +192,6 @@ export default function Products(prop) {
           ServerPath.GETPRODUCTSBYSELLERID +
           `/${querySellerId}`
       );
-      searchParams.append("title", queryTitle ?? "");
       response = await getRequest(
         url.toString() + "?" + searchParams.toString()
       );
@@ -206,7 +206,6 @@ export default function Products(prop) {
         ServerPath.SERVERPATH + ServerPath.GETPRODUCTSBYTITLE
       );
       console.log(url.toString(), searchParams.toString());
-      searchParams.append("title", "");
       response = await getRequest(
         url.toString() + "?" + searchParams.toString()
       );

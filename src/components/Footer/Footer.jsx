@@ -97,7 +97,7 @@ export default function Footer(props) {
             <div className="col-md-3 col-sm-6">
               <h3>Newsletter</h3>
               <p>Trade is Worldest leading classifieds platform that brings!</p>
-              { isAuthenticated || <NavLink to={"/registration"} className={`btn ${s["btn"]} ${s["btn-green"]} mt-2`}>
+              { isAuthenticated || <NavLink to={"/registration"} className={({ isActive }) => `btn ${s["btn"]} ${s["btn-green"]} mt-2 ${(isActive ? "d-none" : "")}`}>
                   Sign Up
               </NavLink>}
             </div>

@@ -76,7 +76,7 @@
       font-size: 14px;
       color: #fff;
       padding: 6px 25px 8px;
-      background-color: var(--default-color);
+      background-color: var(--default-color) !important;
       transition: 0.4s;
       &:hover {
         background-color: #007bff;
