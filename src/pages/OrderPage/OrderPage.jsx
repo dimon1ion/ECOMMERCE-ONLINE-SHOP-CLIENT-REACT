@@ -187,13 +187,7 @@ export default function OrderPage() {
                   >
                     <span>Total</span>
                     <span>
-                      {cart.reduce(
-                        (
-                          { product: { price: prev } },
-                          { product: { price: current } }
-                        ) => +prev + +current,
-                        { product: { price: 0 } }
-                      )}{" "}
+                    {cart.map((item)=>item.product.price*item.quantity).reduce((total, current) => +total + +current, 0)}{" "}
                       ₼
                     </span>
                   </h2>
