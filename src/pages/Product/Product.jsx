@@ -223,7 +223,7 @@ export default function Product(props) {
       if (response !== null && response.ok) {
         reloadReviews();
         closeHandler();
-        setIsLoadingAddingReview(true);
+        setIsLoadingAddingReview(false);
         return;
       } else if (response !== null) {
         const data = await response.json();
