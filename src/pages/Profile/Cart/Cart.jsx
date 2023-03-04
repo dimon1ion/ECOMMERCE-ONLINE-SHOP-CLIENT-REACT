@@ -62,7 +62,8 @@ export default function Cart() {
           {cart.length > 0 && (<div className={`${s["total"]}`}>
             <h2 className={`${s["total__money"]} d-flex justify-content-between`}>
               <span>Total</span>
-              <span>{cart.reduce(({product:{price:prev}}, {product:{price:current}}) => +prev + +current, {product:{price:0}})} ₼</span>
+                  {console.log(cart) }
+              <span>{cart.map((item)=>item.product.price*item.quantity).reduce((total, current) => +total + +current, 0)} ₼</span>
             </h2>
             <Button color={"secondary"} className={s["order_button"]} onPress={() => {navigate("/checkout")}} auto>Order now</Button>
 
