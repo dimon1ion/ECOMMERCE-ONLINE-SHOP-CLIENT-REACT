@@ -1,5 +1,5 @@
 export default class ServerPath{
-    static get SERVERPATH() { return "https://itstep-ecommerce.azurewebsites.net"; };
+    static get SERVERPATH() { return "https://itstepwebapplication.azurewebsites.net"; };
     static get LOGIN() { return "/api/Auth/login"; };
     static get REGISTRATION() { return "/api/Auth/userreg"; };
     static get GETALLCATEGORIES() { return "/api/Category/getall"; };

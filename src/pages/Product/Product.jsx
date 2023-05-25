@@ -245,6 +245,7 @@ export default function Product(props) {
   const handler = () => setVisible(true);
 
   const closeHandler = async () => {
+    setAddReviewImages([]);
     setIsLoadingAddingToCart(true);
     const res = await setVisible(false);
     console.log(res);
@@ -663,8 +664,9 @@ export default function Product(props) {
             placeholder="Write whatever you think"
             onChange={(event) => setAddReviewText(event.target.value)}
           />
-          {addReviewImages.map((item) => (
+          {addReviewImages.map((item, index1) => (
             <Input
+              key={index1}
               clearable
               bordered
               fullWidth
@@ -673,7 +675,17 @@ export default function Product(props) {
               placeholder="Image"
               accept={"image/*"}
               type={"file"}
-              value={item}
+              // value={item?.name ?? ""}
+              onChange={e => {
+                const tmp = addReviewImages.map((item, index2) => {
+                  if (index1 == index2 && e.target.files.length === 1) {
+                    return e.target.files[0];
+                  }
+                  return item;
+                });
+                console.log("---------", tmp);
+                setAddReviewImages(tmp);
+              }}
             />
           ))}
           <Row justify="space-between">
